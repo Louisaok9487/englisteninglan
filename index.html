@@ -172,7 +172,7 @@
 
             <!-- Listening Comprehension Quiz -->
             <div class="p-4 bg-green-50 rounded-lg shadow-sm">
-                <h3 class="text-xl font-semibold text-gray-700 mb-4">情境對話理解</h3>
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">情境對話理解 <span id="scenarioNumberDisplay" class="text-base font-normal text-gray-500 ml-2"></span></h3>
                 <p class="text-gray-600 mb-4">仔細聆聽對話，然後回答問題。</p>
 
                 <div id="conversationDisplay" class="bg-white p-4 rounded-lg shadow-inner mb-6 min-h-[120px] flex flex-col justify-center">
@@ -211,9 +211,7 @@
         // --- Global Variables and Initial Setup ---
         const appContainer = document.querySelector('.app-container');
         const listeningTabBtn = document.getElementById('listeningTabBtn');
-        // const speakingTabBtn = document.getElementById('speakingTabBtn'); // Removed
         const listeningContent = document.getElementById('listeningContent');
-        // const speakingContent = document.getElementById('speakingContent'); // Removed
         const messageBox = document.getElementById('messageBox');
 
         // Speech Synthesis (TTS)
@@ -232,10 +230,6 @@
         let recordedAudioBlob = null;
         let audioContext = null;
         let sourceNode = null;
-
-        // Sentences for speaking practice (Removed as speaking tab is removed)
-        // const speakingSentences = [];
-        // let currentSpeakingSentenceIndex = 0;
 
         // --- Listening Scenarios for Taiwan Daily Life ---
         const listeningScenarios = [
@@ -894,7 +888,7 @@
                 question: "朋友B提議唱哪首歌？",
                 options: ["Let It Go", "Perfect", "A Whole New World", "Despacito"],
                 correctAnswerIndex: 2,
-                englishTranscript: "Friend A: Let's sing some songs! What do you want to sing first?\nFriend B: How about a duet? Do you know 'A Whole New World'?\nFriend A: Oh, I love that one! Let's search for it. Do they have English songs here?\nFriend B: Yes, they have a huge selection of English and Chinese songs.\nFriend A: Awesome! This is going to be fun.",
+                englishTranscript: "Friend A: Let's sing some songs! What do you want to sing first?\nFriend B: How about a duet? Do you know 'A Whole New World'?",
             },
             {
                 topic: "At a Temple Fair (廟會)",
@@ -1065,7 +1059,6 @@
         }
 
         listeningTabBtn.addEventListener('click', () => showTab('listening'));
-        // speakingTabBtn.addEventListener('click', () => showTab('speaking')); // Removed
 
         // --- Listening Practice Functions ---
 
@@ -1082,6 +1075,7 @@
         const quizTranscriptDisplay = document.getElementById('quizTranscriptDisplay');
         const usAccentBtn = document.getElementById('usAccentBtn');
         const ukAccentBtn = document.getElementById('ukAccentBtn');
+        const scenarioNumberDisplay = document.getElementById('scenarioNumberDisplay'); // New element for scenario number
 
         /**
          * Selects the best available voice for a given language tag and preference.
@@ -1112,21 +1106,14 @@
          * Loads available voices and assigns them to speakerVoiceMap.
          */
         function loadVoices() {
-            // Ensure voices are loaded before attempting to select
+            // If voices haven't loaded yet, retry after a short delay
             if (synth.getVoices().length === 0) {
-                synth.onvoiceschanged = loadVoices; // Re-run when voices are loaded
+                setTimeout(loadVoices, 100);
                 return;
             }
 
-            let voice1, voice2;
-
-            if (currentAccent === 'en-GB') {
-                voice1 = selectBestVoice('en-GB');
-                voice2 = selectBestVoice('en-GB');
-            } else { // en-US
-                voice1 = selectBestVoice('en-US');
-                voice2 = selectBestVoice('en-US');
-            }
+            let voice1 = selectBestVoice(currentAccent);
+            let voice2 = selectBestVoice(currentAccent);
 
             // Ensure voice2 is different from voice1 if possible
             const allVoicesForAccent = synth.getVoices().filter(v => v.lang === currentAccent);
@@ -1151,8 +1138,8 @@
             speaker1Voice = voice1;
             speaker2Voice = voice2;
 
-            // console.log("Speaker 1 Voice:", speaker1Voice ? speaker1Voice.name : 'N/A');
-            // console.log("Speaker 2 Voice:", speaker2Voice ? speaker2Voice.name : 'N/A');
+            // console.log("Final Speaker 1 Voice:", speaker1Voice ? speaker1Voice.name : 'N/A');
+            // console.log("Final Speaker 2 Voice:", speaker2Voice ? speaker2Voice.name : 'N/A');
         }
 
         // Ensure voices are loaded when they change or initially
@@ -1176,7 +1163,7 @@
                     resolve();
                 };
                 currentUtterance.onerror = (event) => {
-                    console.error('SpeechSynthesisUtterance.onerror', event);
+                    console.error('SpeechSynthesisUtterance.onerror', event.error || event); // Log event.error if available
                     showMessageBox('語音合成失敗。您的瀏覽器可能不支援或有問題。', 'error');
                     reject(event); // Reject the promise on error
                 };
@@ -1214,6 +1201,9 @@
             quizFeedback.textContent = '';
             quizTranscriptDisplay.classList.add('hidden');
             selectedOptionIndex = -1; // Reset selected option
+
+            // Update scenario number display
+            scenarioNumberDisplay.textContent = `(情境 #${currentScenarioIndex + 1} / ${listeningScenarios.length})`;
 
             // Reset speaker map for new scenario
             speakerMap = {};
@@ -1364,9 +1354,16 @@
                 stopConversationBtn.disabled = true;
                 pauseConversationBtn.textContent = '暫停 ⏸️';
             }
-            currentScenarioIndex = (currentScenarioIndex + 1) % listeningScenarios.length;
+            
+            // Randomly choose a new scenario, ensuring it's not the current one
+            let newScenarioIndex;
+            do {
+                newScenarioIndex = Math.floor(Math.random() * listeningScenarios.length);
+            } while (newScenarioIndex === currentScenarioIndex);
+            
+            currentScenarioIndex = newScenarioIndex;
             displayCurrentScenario();
-            showMessageBox('載入下一個情境。', 'info');
+            showMessageBox(`載入下一個情境：情境 #${currentScenarioIndex + 1}。`, 'info');
         });
 
         checkAnswerBtn.addEventListener('click', () => {
@@ -1381,7 +1378,8 @@
                 quizFeedback.className = 'text-lg font-semibold mt-4 text-green-600';
                 showMessageBox('恭喜！答案正確！', 'success');
             } else {
-                quizFeedback.textContent = '答錯了。請再試一次或顯示中文原文。🤔';
+                const correctAnswerText = scenario.options[scenario.correctAnswerIndex];
+                quizFeedback.textContent = `答錯了。正確答案是：「${correctAnswerText}」。請準備好後前往下一個情境。😊`;
                 quizFeedback.className = 'text-lg font-semibold mt-4 text-red-600';
                 showMessageBox('答案不正確。', 'error');
             }
