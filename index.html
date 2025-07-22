@@ -88,6 +88,14 @@
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
         }
 
+        /* Styling for disabled buttons */
+        .btn:disabled {
+            opacity: 0.5; /* Make it visibly greyed out */
+            cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+            box-shadow: none; /* Remove shadow when disabled */
+            transform: none; /* Remove lift effect when disabled */
+        }
+
         /* Input styling */
         .input-field {
             width: 100%;
@@ -184,7 +192,7 @@
                     <button id="playConversationBtn" class="btn btn-primary flex-1">播放對話 ▶️</button>
                     <button id="pauseConversationBtn" class="btn btn-secondary flex-1" disabled>暫停 ⏸️</button>
                     <button id="stopConversationBtn" class="btn btn-danger flex-1" disabled>停止 ⏹️</button>
-                    <button id="nextScenarioBtn" class="btn btn-secondary flex-1">下一個情境 ➡️</button>
+                    <button id="nextScenarioBtn" class="btn btn-secondary flex-1">下一個隨機情境 ➡️</button>
                 </div>
 
                 <p id="scenarioQuestion" class="text-lg font-semibold text-gray-800 mb-4 mt-4 hidden">問題：</p>
