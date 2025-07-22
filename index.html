@@ -154,7 +154,7 @@
         <!-- Tab Navigation -->
         <div class="flex border-b border-gray-200">
             <button id="listeningTabBtn" class="tab-button active flex-1 text-center">聽力練習 🎧</button>
-            <button id="speakingTabBtn" class="tab-button flex-1 text-center">口說練習 🗣️</button>
+            <!-- Speaking tab removed -->
         </div>
 
         <!-- Listening Practice Tab Content -->
@@ -201,39 +201,7 @@
             </div>
         </div>
 
-        <!-- Speaking Practice Tab Content -->
-        <div id="speakingContent" class="content-section">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">口說練習</h2>
-
-            <!-- Sentence Repetition -->
-            <div class="mb-8 p-4 bg-purple-50 rounded-lg shadow-sm">
-                <h3 class="text-xl font-semibold text-gray-700 mb-4">句子重複</h3>
-                <p class="text-gray-600 mb-4">重複下面的句子並檢查你的發音。</p>
-                <p id="targetSentence" class="text-xl font-medium text-blue-700 bg-blue-100 p-3 rounded-md mb-4">點擊「下一個句子」開始。</p>
-                <div class="flex flex-wrap gap-3 mb-4">
-                    <button id="recordBtn" class="btn btn-primary">錄音 🎤</button>
-                    <button id="stopRecordBtn" class="btn btn-danger" disabled>停止錄音 ⏹️</button>
-                    <button id="playOriginalBtn" class="btn btn-secondary" disabled>播放原文 ▶️</button>
-                    <button id="playMyRecordingBtn" class="btn btn-secondary" disabled>播放我的錄音 👂</button>
-                    <button id="nextSpeakingSentenceBtn" class="btn btn-secondary">下一個句子 ➡️</button>
-                </div>
-                <p class="text-gray-600 mt-4">你的轉錄：</p>
-                <p id="userTranscription" class="text-lg text-gray-800 bg-gray-100 p-3 rounded-md min-h-[50px]"></p>
-                <p id="speakingFeedback" class="text-lg font-semibold mt-4"></p>
-            </div>
-
-            <!-- Free Speaking Mode -->
-            <div class="p-4 bg-yellow-50 rounded-lg shadow-sm">
-                <h3 class="text-xl font-semibold text-gray-700 mb-4">自由口說模式</h3>
-                <p class="text-gray-600 mb-4">自由說話並查看你的文字轉錄。</p>
-                <div class="flex flex-wrap gap-3 mb-4">
-                    <button id="startFreeSpeakBtn" class="btn btn-primary">開始自由說話 🎙️</button>
-                    <button id="stopFreeSpeakBtn" class="btn btn-danger" disabled>停止自由說話 🛑</button>
-                </div>
-                <p class="text-gray-600 mt-4">你的自由說話轉錄：</p>
-                <p id="freeSpeechTranscription" class="text-lg text-gray-800 bg-gray-100 p-3 rounded-md min-h-[50px]"></p>
-            </div>
-        </div>
+        <!-- Speaking Practice Tab Content Removed -->
 
         <!-- Global Message Box -->
         <div id="messageBox" class="message-box"></div>
@@ -243,9 +211,9 @@
         // --- Global Variables and Initial Setup ---
         const appContainer = document.querySelector('.app-container');
         const listeningTabBtn = document.getElementById('listeningTabBtn');
-        const speakingTabBtn = document.getElementById('speakingTabBtn');
+        // const speakingTabBtn = document.getElementById('speakingTabBtn'); // Removed
         const listeningContent = document.getElementById('listeningContent');
-        const speakingContent = document.getElementById('speakingContent');
+        // const speakingContent = document.getElementById('speakingContent'); // Removed
         const messageBox = document.getElementById('messageBox');
 
         // Speech Synthesis (TTS)
@@ -257,7 +225,7 @@
         let speaker2Voice = null; // Voice for speaker 2
         let currentAccent = 'en-GB'; // Default accent for all speech
 
-        // Speech Recognition (STT)
+        // Speech Recognition (STT) - Removed as speaking tab is removed
         let recognition = null;
         let mediaRecorder = null;
         let audioChunks = [];
@@ -265,20 +233,9 @@
         let audioContext = null;
         let sourceNode = null;
 
-        // Sentences for speaking practice (unchanged from previous version)
-        const speakingSentences = [
-            "Hello, how are you today?",
-            "Could you please pass me the salt?",
-            "I would like to order a coffee, please.",
-            "What time does the next train depart?",
-            "It's a beautiful day for a walk.",
-            "Thank you for your help, I really appreciate it.",
-            "Where is the nearest supermarket?",
-            "I am learning English and it's quite interesting.",
-            "Could you repeat that, please?",
-            "Nice to meet you."
-        ];
-        let currentSpeakingSentenceIndex = 0;
+        // Sentences for speaking practice (Removed as speaking tab is removed)
+        // const speakingSentences = [];
+        // let currentSpeakingSentenceIndex = 0;
 
         // --- Listening Scenarios for Taiwan Daily Life ---
         const listeningScenarios = [
@@ -441,6 +398,615 @@
                 options: ["日圓", "歐元", "美元", "人民幣"],
                 correctAnswerIndex: 2,
                 englishTranscript: "Customer: Excuse me, I'd like to exchange some currency.\nBank Teller: Certainly. What currency are you exchanging?\nCustomer: US dollars to New Taiwan dollars.\nBank Teller: Okay, please fill out this form. Do you have your passport?",
+            },
+            // --- 20 New Scenarios Below ---
+            {
+                topic: "Buying Fruit at a Traditional Market (傳統市場買水果)",
+                conversation: [
+                    "Customer: How much are these mangoes?",
+                    "Vendor: They are 80 NTD per catty.",
+                    "Customer: Can I get two, please? Are they sweet?",
+                    "Vendor: Very sweet! Freshly picked this morning.",
+                    "Customer: Great! I'll take them.",
+                    "Vendor: Here you go. Enjoy!"
+                ],
+                chineseTranslation: "顧客：這些芒果多少錢？\n攤販：一斤80元。\n顧客：我買兩個，謝謝。它們甜嗎？\n攤販：非常甜！今天早上剛採的。\n顧客：太好了！我買了。\n攤販：給你。請享用！",
+                question: "芒果的價格是多少？",
+                options: ["一斤50元", "一斤60元", "一斤80元", "一斤100元"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: How much are these mangoes?\nVendor: They are 80 NTD per catty.\nCustomer: Can I get two, please? Are they sweet?\nVendor: Very sweet! Freshly picked this morning.\nCustomer: Great! I'll take them.\nVendor: Here you go. Enjoy!"
+            },
+            {
+                topic: "Ordering Street Food (點小吃)",
+                conversation: [
+                    "Customer: I'd like one oyster omelette, please.",
+                    "Vendor: Spicy or not spicy?",
+                    "Customer: Not spicy, thank you. And one stinky tofu.",
+                    "Vendor: Alright, that's 170 NTD. For here or to go?",
+                    "Customer: To go, please.",
+                    "Vendor: Coming right up!"
+                ],
+                chineseTranslation: "顧客：我想要一份蚵仔煎，謝謝。\n攤販：要辣的還是不辣的？\n顧客：不辣的，謝謝。還有一份臭豆腐。\n攤販：好的，總共170元。內用還是外帶？\n顧客：外帶，謝謝。\n攤販：馬上來！",
+                question: "顧客點了哪兩種小吃？",
+                options: ["滷肉飯和雞排", "蚵仔煎和臭豆腐", "牛肉麵和水餃", "蔥油餅和潤餅"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Customer: I'd like one oyster omelette, please.\nVendor: Spicy or not spicy?\nCustomer: Not spicy, thank you. And one stinky tofu.\nVendor: Alright, that's 170 NTD. For here or to go?\nCustomer: To go, please.\nVendor: Coming right up!"
+            },
+            {
+                topic: "Asking about Bus Routes/Fares (詢問公車路線/票價)",
+                conversation: [
+                    "Passenger: Excuse me, does this bus go to National Palace Museum?",
+                    "Driver: No, you need bus number 304. This one goes to Shilin.",
+                    "Passenger: Oh, I see. How much is the fare?",
+                    "Driver: It's 15 NTD with an EasyCard, or 30 NTD cash.",
+                    "Passenger: Thank you for the information.",
+                    "Driver: You're welcome."
+                ],
+                chineseTranslation: "乘客：不好意思，這班公車有到故宮博物院嗎？\n司機：沒有，你需要搭304號公車。這班車到士林。\n乘客：喔，原來如此。票價多少？\n司機：用悠遊卡是15元，現金是30元。\n乘客：謝謝你的資訊。\n司機：不客氣。",
+                question: "乘客需要搭乘哪一號公車才能到達故宮博物院？",
+                options: ["208", "260", "304", "605"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Passenger: Excuse me, does this bus go to National Palace Museum?\nDriver: No, you need bus number 304. This one goes to Shilin.\nPassenger: Oh, I see. How much is the fare?\nDriver: It's 15 NTD with an EasyCard, or 30 NTD cash.\nPassenger: Thank you for the information.\nDriver: You're welcome."
+            },
+            {
+                topic: "Visiting a Night Market Game Stall (夜市遊戲攤位)",
+                conversation: [
+                    "Player: How much for one round of this balloon dart game?",
+                    "Owner: 100 NTD for three darts!",
+                    "Player: Okay, I'll try. What's the prize for hitting all balloons?",
+                    "Owner: You can choose any large plush toy!",
+                    "Player: Wow, that's cool! Here's the money.",
+                    "Owner: Good luck!"
+                ],
+                chineseTranslation: "玩家：這個射氣球遊戲一輪多少錢？\n老闆：三支飛鏢100元！\n玩家：好，我試試看。射中所有氣球的獎品是什麼？\n老闆：你可以選任何一個大型絨毛玩具！\n玩家：哇，太棒了！錢給你。\n老闆：祝你好運！",
+                question: "玩一次射氣球遊戲需要多少錢？",
+                options: ["50元", "80元", "100元", "150元"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Player: How much for one round of this balloon dart game?\nOwner: 100 NTD for three darts!\nPlayer: Okay, I'll try. What's the prize for hitting all balloons?\nOwner: You can choose any large plush toy!\nPlayer: Wow, that's cool! Here's the money.\nOwner: Good luck!"
+            },
+            {
+                topic: "Asking for help with a Scooter Issue (機車問題求助)",
+                conversation: [
+                    "Rider: Excuse me, my scooter tire is flat. Is there a repair shop nearby?",
+                    "Local: Oh, that's a pity. There's one just around the corner, on your right.",
+                    "Rider: Around the corner, on the right. Got it. Is it open now?",
+                    "Local: Yes, they usually open until late evening.",
+                    "Rider: Thank you so much for your help!",
+                    "Local: No problem at all."
+                ],
+                chineseTranslation: "騎車人：不好意思，我的機車輪胎沒氣了。附近有維修店嗎？\n當地人：喔，真可惜。就在轉角處，你右手邊有一家。\n騎車人：轉角處，右手邊。知道了。現在有開嗎？\n當地人：有，他們通常營業到很晚。\n騎車人：非常感謝您的幫助！\n當地人：一點問題都沒有。",
+                question: "機車維修店在哪裡？",
+                options: ["在左手邊", "在轉角處的右手邊", "在前方直走", "在對面"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Rider: Excuse me, my scooter tire is flat. Is there a repair shop nearby?\nLocal: Oh, that's a pity. There's one just around the corner, on your right.\nRider: Around the corner, on the right. Got it. Is it open now?\nLocal: Yes, they usually open until late evening.\nRider: Thank you so much for your help!\nLocal: No problem at all."
+            },
+            {
+                topic: "At a Local Clinic/Pharmacy (診所/藥局)",
+                conversation: [
+                    "Patient: Hello, I have a sore throat and a cough.",
+                    "Receptionist: Please fill out this form. Do you have your NHI card?",
+                    "Patient: Yes, here it is. How long is the wait?",
+                    "Receptionist: About 20 minutes. The doctor will see you shortly.",
+                    "Patient: Thank you.",
+                    "Receptionist: You're welcome."
+                ],
+                chineseTranslation: "病人：你好，我喉嚨痛和咳嗽。\n接待員：請填寫這份表格。你有健保卡嗎？\n病人：是的，在這裡。大概要等多久？\n接待員：大約20分鐘。醫生很快就會看你。\n病人：謝謝。\n接待員：不客氣。",
+                question: "病人有什麼症狀？",
+                options: ["頭痛和發燒", "喉嚨痛和咳嗽", "肚子痛和噁心", "流鼻水和打噴嚏"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Patient: Hello, I have a sore throat and a cough.\nReceptionist: Please fill out this form. Do you have your NHI card?\nPatient: Yes, here it is. How long is the wait?\nReceptionist: About 20 minutes. The doctor will see you shortly.\nPatient: Thank you.",
+            },
+            {
+                topic: "Buying Tickets for a Train/HSR (買火車/高鐵票)",
+                conversation: [
+                    "Customer: I'd like a ticket to Kaohsiung, please. For the next available train.",
+                    "Clerk: One moment. That would be the 10:45 AM HSR. Standard or business class?",
+                    "Customer: Standard, please. How much is it?",
+                    "Clerk: 1490 NTD. Cash or credit card?",
+                    "Customer: Credit card. Thank you!",
+                    "Clerk: Here's your ticket."
+                ],
+                chineseTranslation: "顧客：我想要一張到高雄的票，謝謝。搭下一班有空位的列車。\n售票員：請稍等。那是上午10:45的高鐵。標準車廂還是商務車廂？\n顧客：標準車廂，謝謝。多少錢？\n售票員：新台幣1490元。現金還是信用卡？\n顧客：信用卡。謝謝！\n售票員：這是你的票。",
+                question: "顧客要搭乘哪種交通工具？",
+                options: ["火車", "公車", "高鐵", "捷運"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: I'd like a ticket to Kaohsiung, please. For the next available train.\nClerk: One moment. That would be the 10:45 AM HSR. Standard or business class?\nCustomer: Standard, please. How much is it?\nClerk: 1490 NTD. Cash or credit card?\nCustomer: Credit card. Thank you!",
+            },
+            {
+                topic: "Asking for Recommendations (詢問推薦)",
+                conversation: [
+                    "Tourist: We're looking for a good local restaurant. Any recommendations?",
+                    "Local: Definitely try the beef noodle soup place on the next street. It's very famous.",
+                    "Tourist: Beef noodle soup, sounds great! Is it expensive?",
+                    "Local: Not at all. Very reasonable prices, and delicious!",
+                    "Tourist: Perfect! We'll check it out. Thanks!",
+                    "Local: Enjoy your meal!"
+                ],
+                chineseTranslation: "遊客：我們想找一家好的當地餐廳。有什麼推薦的嗎？\n當地人：絕對要試試下一條街的牛肉麵店。它很有名。\n遊客：牛肉麵，聽起來很棒！貴嗎？\n當地人：一點也不貴。價格非常合理，而且很好吃！\n遊客：太好了！我們會去看看。謝謝！\n當地人：祝你用餐愉快！",
+                question: "當地人推薦了什麼食物？",
+                options: ["滷肉飯", "蚵仔煎", "牛肉麵", "臭豆腐"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Tourist: We're looking for a good local restaurant. Any recommendations?\nLocal: Definitely try the beef noodle soup place on the next street. It's very famous.\nTourist: Beef noodle soup, sounds great! Is it expensive?\nLocal: Not at all. Very reasonable prices, and delicious!\nTourist: Perfect! We'll check it out. Thanks!",
+            },
+            {
+                topic: "Dealing with a Lost Item (處理遺失物)",
+                conversation: [
+                    "Person A: Oh no, I think I left my umbrella on the bus.",
+                    "Person B: You should call the bus company's lost and found. Do you remember the bus number?",
+                    "Person A: I think it was 262. Do you know their number?",
+                    "Person B: I don't have it, but you can find it online easily.",
+                    "Person A: Okay, I'll do that. Thanks for the advice.",
+                    "Person B: Hope you find it!"
+                ],
+                chineseTranslation: "甲：喔不，我想我把雨傘忘在公車上了。\n乙：你應該打電話給公車公司的失物招領處。你記得公車號碼嗎？\n甲：我記得是262。你知道他們的電話號碼嗎？\n乙：我沒有，但你可以在網上很容易找到。\n甲：好的，我會去查。謝謝你的建議。\n乙：希望你找得到！",
+                question: "甲在公車上遺失了什麼物品？",
+                options: ["手機", "錢包", "雨傘", "背包"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Person A: Oh no, I think I left my umbrella on the bus.\nPerson B: You should call the bus company's lost and found. Do you remember the bus number?\nPerson A: I think it was 262. Do you know their number?\nPerson B: I don't have it, but you can find it online easily.\nPerson A: Okay, I'll do that. Thanks for the advice.",
+            },
+            {
+                topic: "Asking about Recycling/Garbage Rules (詢問垃圾分類規則)",
+                conversation: [
+                    "Resident: Excuse me, when is the garbage truck coming today?",
+                    "Local: It usually comes around 7 PM, but it's often a bit late.",
+                    "Resident: I see. And how do I sort the recycling?",
+                    "Local: Paper, plastic, and glass are separate. Food waste goes in a different bucket.",
+                    "Resident: Got it. Thanks for clarifying!",
+                    "Local: No worries."
+                ],
+                chineseTranslation: "居民：不好意思，今天垃圾車什麼時候來？\n當地人：通常晚上7點左右來，但常常會晚一點。\n居民：喔，知道了。那回收物怎麼分類？\n當地人：紙類、塑膠和玻璃是分開的。廚餘要放另一個桶子。\n居民：明白了。謝謝你解釋清楚！\n當地人：不客氣。",
+                question: "垃圾車通常什麼時候來？",
+                options: ["早上8點", "中午12點", "晚上7點左右", "晚上9點"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Resident: Excuse me, when is the garbage truck coming today?\nLocal: It usually comes around 7 PM, but it's often a bit late.\nResident: I see. And how do I sort the recycling?\nLocal: Paper, plastic, and glass are separate. Food waste goes in a different bucket.\nResident: Got it. Thanks for clarifying!",
+            },
+            {
+                topic: "At a Post Office (郵局)",
+                conversation: [
+                    "Customer: I'd like to send this package to the UK, please.",
+                    "Clerk: Alright. Would you prefer airmail or surface mail?",
+                    "Customer: What's the difference in price and time?",
+                    "Clerk: Airmail is faster, about 5-7 days, but more expensive. Surface mail is cheaper, but takes 4-6 weeks.",
+                    "Customer: I'll go with airmail, please.",
+                    "Clerk: Please fill out this customs form."
+                ],
+                chineseTranslation: "顧客：我想把這個包裹寄到英國，謝謝。\n櫃檯人員：好的。您想寄空運還是海運？\n顧客：價格和時間有什麼區別？\n櫃檯人員：空運比較快，大約5-7天，但比較貴。海運比較便宜，但需要4-6週。\n顧客：我選空運，謝謝。\n櫃檯人員：請填寫這份報關單。",
+                question: "顧客想把包裹寄到哪裡？",
+                options: ["美國", "日本", "英國", "加拿大"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: I'd like to send this package to the UK, please.\nClerk: Alright. Would you prefer airmail or surface mail?\nCustomer: What's the difference in price and time?\nClerk: Airmail is faster, about 5-7 days, but more expensive. Surface mail is cheaper, but takes 4-6 weeks.\nCustomer: I'll go with airmail, please.",
+            },
+            {
+                topic: "Asking for Wi-Fi Password (詢問Wi-Fi密碼)",
+                conversation: [
+                    "Customer: Excuse me, do you have Wi-Fi here?",
+                    "Staff: Yes, we do. The network name is 'CafeConnect'.",
+                    "Customer: And what's the password?",
+                    "Staff: It's 'coffeelover123'. All lowercase.",
+                    "Customer: Got it. Thank you!",
+                    "Staff: Enjoy your stay."
+                ],
+                chineseTranslation: "顧客：不好意思，這裡有Wi-Fi嗎？\n店員：是的，我們有。網路名稱是'CafeConnect'。\n顧客：那密碼是什麼？\n店員：是'coffeelover123'。全部小寫。\n顧客：知道了。謝謝！\n店員：祝您愉快。",
+                question: "Wi-Fi的密碼是什麼？",
+                options: ["freewifi", "cafe2024", "coffeelover123", "guestnetwork"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Excuse me, do you have Wi-Fi here?\nStaff: Yes, we do. The network name is 'CafeConnect'.\nCustomer: And what's the password?\nStaff: It's 'coffeelover123'. All lowercase.\nCustomer: Got it. Thank you!",
+            },
+            {
+                topic: "Hair Salon/Barber Shop (理髮店/美髮沙龍)",
+                conversation: [
+                    "Client: Hello, I'd like a haircut, please. Just a trim.",
+                    "Stylist: Alright. How much would you like off?",
+                    "Client: Just about an inch, to keep the length. And a little layering.",
+                    "Stylist: No problem. Would you like a wash and blow-dry as well?",
+                    "Client: Yes, please. Thank you!",
+                    "Stylist: Please follow me."
+                ],
+                chineseTranslation: "顧客：你好，我想剪頭髮，謝謝。只要修剪一下就好。\n設計師：好的。你想剪掉多少？\n顧客：大約一英吋就好，保持長度。再加一點層次。\n設計師：沒問題。也需要洗髮和吹乾嗎？\n顧客：是的，謝謝。\n設計師：請跟我來。",
+                question: "顧客想要怎樣的髮型服務？",
+                options: ["染髮", "燙髮", "剪髮和分層", "護髮"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Client: Hello, I'd like a haircut, please. Just a trim.\nStylist: Alright. How much would you like off?\nClient: Just about an inch, to keep the length. And a little layering.\nStylist: No problem. Would you like a wash and blow-dry as well?\nClient: Yes, please. Thank you!",
+            },
+            {
+                topic: "Buying Souvenirs (買紀念品)",
+                conversation: [
+                    "Tourist: These pineapple cakes look delicious! How many come in a box?",
+                    "Shopkeeper: There are 12 pieces in a box. They are very popular.",
+                    "Tourist: I'll take two boxes, please. Are they fresh?",
+                    "Shopkeeper: Baked this morning! They're our specialty.",
+                    "Tourist: Perfect for gifts. Thank you!",
+                    "Shopkeeper: You're welcome! Enjoy your trip."
+                ],
+                chineseTranslation: "遊客：這些鳳梨酥看起來很好吃！一盒有幾個？\n店主：一盒有12個。它們很受歡迎。\n遊客：我買兩盒，謝謝。它們新鮮嗎？\n店主：今天早上剛烤的！這是我們的特色產品。\n遊客：非常適合當禮物。謝謝！\n店主：不客氣！祝您旅途愉快。",
+                question: "一盒鳳梨酥有幾塊？",
+                options: ["6塊", "8塊", "10塊", "12塊"],
+                correctAnswerIndex: 3,
+                englishTranscript: "Tourist: These pineapple cakes look delicious! How many come in a box?\nShopkeeper: There are 12 pieces in a box. They are very popular.\nTourist: I'll take two boxes, please. Are they fresh?\nShopkeeper: Baked this morning! They're our specialty.\nTourist: Perfect for gifts. Thank you!",
+            },
+            {
+                topic: "Asking about Opening Hours (詢問營業時間)",
+                conversation: [
+                    "Customer: Excuse me, what time do you close today?",
+                    "Staff: We close at 9 PM on weekdays.",
+                    "Customer: And on weekends?",
+                    "Staff: On Saturdays and Sundays, we close at 10 PM.",
+                    "Customer: Okay, thank you! I'll come back later.",
+                    "Staff: See you then!"
+                ],
+                chineseTranslation: "顧客：不好意思，你們今天幾點關門？\n店員：我們平日晚上9點關門。\n顧客：那週末呢？\n店員：週六和週日，我們晚上10點關門。\n顧客：好的，謝謝！我晚點再來。\n店員：到時見！",
+                question: "這家店週末幾點關門？",
+                options: ["晚上8點", "晚上9點", "晚上10點", "晚上11點"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Excuse me, what time do you close today?\nStaff: We close at 9 PM on weekdays.\nCustomer: And on weekends?\nStaff: On Saturdays and Sundays, we close at 10 PM.\nCustomer: Okay, thank you! I'll come back later.",
+            },
+            {
+                topic: "At a Laundromat (自助洗衣店)",
+                conversation: [
+                    "Customer: How much does it cost to use the washing machine?",
+                    "Attendant: It's 50 NTD for a small load, 80 for a large.",
+                    "Customer: And for the dryer?",
+                    "Attendant: 10 NTD for 10 minutes. Do you need detergent?",
+                    "Customer: No, I have my own. Thanks!",
+                    "Attendant: You're welcome."
+                ],
+                chineseTranslation: "顧客：洗衣機要多少錢？\n服務員：小容量50元，大容量80元。\n顧客：那烘衣機呢？\n服務員：10分鐘10元。你需要洗衣精嗎？\n顧客：不用，我有自己的。謝謝！\n服務員：不客氣。",
+                question: "烘衣機每10分鐘的費用是多少？",
+                options: ["5元", "10元", "15元", "20元"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Customer: How much does it cost to use the washing machine?\nAttendant: It's 50 NTD for a small load, 80 for a large.\nCustomer: And for the dryer?\nAttendant: 10 NTD for 10 minutes. Do you need detergent?\nCustomer: No, I have my own. Thanks!",
+            },
+            {
+                topic: "Ordering Coffee at a Cafe (咖啡廳點咖啡)",
+                conversation: [
+                    "Barista: What can I get for you?",
+                    "Customer: I'd like a hot latte, please. With oat milk.",
+                    "Barista: Oat milk latte, got it. Anything else?",
+                    "Customer: Yes, and a slice of cheesecake.",
+                    "Barista: Okay, that'll be 220 NTD. For here or to go?",
+                    "Customer: For here, please."
+                ],
+                chineseTranslation: "咖啡師：您想點什麼？\n顧客：我想要一杯熱拿鐵，謝謝。用燕麥奶。\n咖啡師：燕麥奶拿鐵，好的。還有別的嗎？\n顧客：是的，再加一片起司蛋糕。\n咖啡師：好的，總共220元。內用還是外帶？\n顧客：內用，謝謝。",
+                question: "顧客點了什麼飲料？",
+                options: ["美式咖啡", "卡布奇諾", "熱拿鐵", "冰咖啡"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Barista: What can I get for you?\nCustomer: I'd like a hot latte, please. With oat milk.\nBarista: Oat milk latte, got it. Anything else?\nCustomer: Yes, and a slice of cheesecake.\nBarista: Okay, that'll be 220 NTD. For here or to go?",
+            },
+            {
+                topic: "Asking about Local Festivals/Events (詢問當地節慶/活動)",
+                conversation: [
+                    "Tourist: Is there anything special happening in Taipei this weekend?",
+                    "Local: Yes, there's a Lantern Festival celebration at the park on Saturday evening.",
+                    "Tourist: Oh, that sounds interesting! What time does it start?",
+                    "Local: The main event begins at 6 PM, but you can go earlier to see the lanterns.",
+                    "Tourist: Perfect! Thank you for the information.",
+                    "Local: Enjoy the festival!"
+                ],
+                chineseTranslation: "遊客：這個週末台北有什麼特別的活動嗎？\n當地人：有，週六晚上公園有元宵節慶祝活動。\n遊客：喔，聽起來很有趣！什麼時候開始？\n當地人：主要活動晚上6點開始，但你可以早點去看看燈籠。\n遊客：太好了！謝謝你的資訊。\n當地人：祝你節日愉快！",
+                question: "這個週末台北有什麼活動？",
+                options: ["音樂會", "美食展", "元宵節慶祝活動", "運動比賽"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Tourist: Is there anything special happening in Taipei this weekend?\nLocal: Yes, there's a Lantern Festival celebration at the park on Saturday evening.\nTourist: Oh, that sounds interesting! What time does it start?",
+            },
+            {
+                topic: "Renting a Bicycle (租借自行車)",
+                conversation: [
+                    "Renter: Hi, I'd like to rent a bicycle for a few hours.",
+                    "Clerk: Sure, we have mountain bikes and city bikes. Which one do you prefer?",
+                    "Renter: A city bike, please. How much is it per hour?",
+                    "Clerk: It's 50 NTD per hour, or 200 NTD for the whole day.",
+                    "Renter: I'll take it for three hours. Do I need to leave a deposit?",
+                    "Clerk: Just your ID is fine. Enjoy your ride!"
+                ],
+                chineseTranslation: "租借人：你好，我想租一輛自行車幾個小時。\n店員：好的，我們有登山車和城市自行車。你喜歡哪一種？\n租借人：城市自行車，謝謝。每小時多少錢？\n店員：每小時50元，或者整天200元。\n租借人：我租三個小時。需要押金嗎？\n店員：只要你的身份證就可以了。祝你騎行愉快！",
+                question: "租借城市自行車一小時的費用是多少？",
+                options: ["30元", "40元", "50元", "60元"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Renter: Hi, I'd like to rent a bicycle for a few hours.\nClerk: Sure, we have mountain bikes and city bikes. Which one do you prefer?\nRenter: A city bike, please. How much is it per hour?\nClerk: It's 50 NTD per hour, or 200 NTD for the whole day.\nRenter: I'll take it for three hours. Do I need to leave a deposit?",
+            },
+            {
+                topic: "Asking for the Restroom (詢問洗手間)",
+                conversation: [
+                    "Customer: Excuse me, where is the restroom?",
+                    "Staff: It's downstairs, to your left.",
+                    "Customer: Downstairs, left. Got it. Is it free to use?",
+                    "Staff: Yes, it is. Just follow the signs.",
+                    "Customer: Thank you very much!",
+                    "Staff: No problem."
+                ],
+                chineseTranslation: "顧客：不好意思，洗手間在哪裡？\n店員：在樓下，你左手邊。\n顧客：樓下，左手邊。知道了。可以免費使用嗎？\n店員：是的，可以。跟著指示牌走就好。\n顧客：非常感謝！\n店員：不客氣。",
+                question: "洗手間在哪裡？",
+                options: ["樓上", "樓下右手邊", "樓下左手邊", "外面"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Excuse me, where is the restroom?\nStaff: It's downstairs, to your left.\nCustomer: Downstairs, left. Got it. Is it free to use?\nStaff: Yes, it is. Just follow the signs.\nCustomer: Thank you very much!",
+            },
+            {
+                topic: "At a Supermarket (超市購物)",
+                conversation: [
+                    "Customer: Excuse me, where can I find the milk?",
+                    "Staff: The dairy section is in aisle 3, on your right.",
+                    "Customer: Aisle 3, right. Thank you. Do you have organic milk?",
+                    "Staff: Yes, we have a few brands. They're on the top shelf.",
+                    "Customer: Great! Thanks for your help.",
+                    "Staff: My pleasure."
+                ],
+                chineseTranslation: "顧客：不好意思，請問牛奶在哪裡？\n店員：乳製品區在第三排，你右手邊。\n顧客：第三排，右手邊。謝謝。你們有有機牛奶嗎？\n店員：是的，我們有幾個品牌。它們在最上面的架子上。\n顧客：太好了！謝謝你的幫助。\n店員：不客氣。",
+                question: "牛奶在哪個區域？",
+                options: ["冷凍食品區", "零食區", "乳製品區", "熟食區"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Excuse me, where can I find the milk?\nStaff: The dairy section is in aisle 3, on your right.\nCustomer: Aisle 3, right. Thank you. Do you have organic milk?\nStaff: Yes, we have a few brands. They're on the top shelf.\nCustomer: Great! Thanks for your help.",
+            },
+            {
+                topic: "Buying a SIM Card (購買SIM卡)",
+                conversation: [
+                    "Customer: Hello, I need a local SIM card for my phone.",
+                    "Clerk: Alright. How long will you be staying in Taiwan?",
+                    "Customer: For about two weeks.",
+                    "Clerk: We have a 15-day plan with unlimited data for 500 NTD. Is that suitable?",
+                    "Customer: Yes, that sounds perfect. I'll take that one.",
+                    "Clerk: Please show me your passport for registration."
+                ],
+                chineseTranslation: "顧客：你好，我需要一張當地的手機SIM卡。\n店員：好的。你預計在台灣待多久？\n顧客：大約兩週。\n店員：我們有15天無限上網方案，500元。這個適合嗎？\n顧客：是的，聽起來很完美。我就要那個。\n店員：請出示您的護照進行登記。",
+                question: "顧客想在台灣停留多久？",
+                options: ["一週", "兩週", "一個月", "三個月"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Customer: Hello, I need a local SIM card for my phone.\nClerk: Alright. How long will you be staying in Taiwan?\nCustomer: For about two weeks.\nClerk: We have a 15-day plan with unlimited data for 500 NTD. Is that suitable?\nCustomer: Yes, that sounds perfect. I'll take that one.",
+            },
+            {
+                topic: "At a Traditional Chinese Medicine Clinic (中醫診所)",
+                conversation: [
+                    "Patient: Good morning, I'm here for acupuncture.",
+                    "Receptionist: Please take a seat. Have you been here before?",
+                    "Patient: No, it's my first time. I have shoulder pain.",
+                    "Receptionist: Okay, the doctor will see you in about 15 minutes. Please fill out this health form.",
+                    "Patient: Thank you.",
+                    "Receptionist: You're welcome."
+                ],
+                chineseTranslation: "病人：早安，我來針灸的。\n接待員：請坐。您以前來過嗎？\n病人：沒有，這是第一次。我肩膀痛。\n接待員：好的，醫生大約15分鐘後會看您。請填寫這份健康表格。\n病人：謝謝。\n接待員：不客氣。",
+                question: "病人來診所是為了什麼？",
+                options: ["拔牙", "針灸", "視力檢查", "打疫苗"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Patient: Good morning, I'm here for acupuncture.\nReceptionist: Please take a seat. Have you been here before?\nPatient: No, it's my first time. I have shoulder pain.\nReceptionist: Okay, the doctor will see you in about 15 minutes. Please fill out this health form.",
+            },
+            {
+                topic: "Asking for a Recommendation for a Local Snack (詢問當地點心推薦)",
+                conversation: [
+                    "Tourist: I'm looking for a famous local snack. What do you recommend?",
+                    "Local: You must try Sun Cakes! They are a specialty from Taichung.",
+                    "Tourist: Sun Cakes? What are they like?",
+                    "Local: They're sweet, flaky pastries, often with a maltose filling. Very delicious with tea.",
+                    "Tourist: Sounds wonderful! Where can I buy them?",
+                    "Local: There's a famous shop just two blocks away."
+                ],
+                chineseTranslation: "遊客：我在找一種有名的當地點心。你推薦什麼？\n當地人：你一定要試試太陽餅！那是台中特產。\n遊客：太陽餅？它是什麼樣的？\n當地人：它們是甜的、酥脆的糕點，通常有麥芽糖內餡。配茶非常好吃。\n遊客：聽起來很棒！在哪裡可以買到？\n當地人：離這裡兩條街就有一家有名的店。",
+                question: "當地人推薦的點心是什麼？",
+                options: ["鳳梨酥", "太陽餅", "牛舌餅", "綠豆椪"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Tourist: I'm looking for a famous local snack. What do you recommend?\nLocal: You must try Sun Cakes! They are a specialty from Taichung.\nTourist: Sun Cakes? What are they like?\nLocal: They're sweet, flaky pastries, often with a maltose filling. Very delicious with tea.\nTourist: Sounds wonderful! Where can I buy them?",
+            },
+            {
+                topic: "At a Traditional Tea House (茶藝館)",
+                conversation: [
+                    "Customer: Hello, we'd like to experience a traditional tea ceremony.",
+                    "Teahouse Staff: Welcome! We have several types of oolong tea. Would you like a lighter or stronger flavour?",
+                    "Customer: A lighter one, please. Which tea do you recommend for beginners?",
+                    "Teahouse Staff: High Mountain Oolong is a good choice. It's very fragrant and smooth.",
+                    "Customer: Sounds perfect. Thank you!",
+                    "Teahouse Staff: Please follow me to your table."
+                ],
+                chineseTranslation: "顧客：你好，我們想體驗傳統茶道。\n茶館員工：歡迎！我們有幾種烏龍茶。您喜歡清淡一點還是濃郁一點的口味？\n顧客：清淡一點的，謝謝。初學者推薦哪種茶？\n茶館員工：高山烏龍是個不錯的選擇。它非常芬芳順口。\n顧客：聽起來很完美。謝謝！\n茶館員工：請跟我到您的座位。",
+                question: "茶館員工向初學者推薦了哪種茶？",
+                options: ["普洱茶", "綠茶", "高山烏龍", "紅茶"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Hello, we'd like to experience a traditional tea ceremony.\nTeahouse Staff: Welcome! We have several types of oolong tea. Would you like a lighter or stronger flavour?\nCustomer: A lighter one, please. Which tea do you recommend for beginners?\nTeahouse Staff: High Mountain Oolong is a good choice. It's very fragrant and smooth.\nCustomer: Sounds perfect. Thank you!",
+            },
+            {
+                topic: "Asking for help with a broken phone (手機故障求助)",
+                conversation: [
+                    "Customer: Excuse me, my phone screen is cracked. Can you fix it?",
+                    "Technician: Let me take a look. Yes, we can replace the screen. Which model is it?",
+                    "Customer: It's an iPhone 13. How long will it take?",
+                    "Technician: About an hour, if we have the part in stock. The cost is 3,500 NTD.",
+                    "Customer: Okay, please fix it. Thank you!",
+                    "Technician: We'll call you when it's ready."
+                ],
+                chineseTranslation: "顧客：不好意思，我的手機螢幕裂了。你們能修嗎？\n技術員：我看看。是的，我們可以更換螢幕。這是什麼型號？\n顧客：是iPhone 13。需要多久？\n技術員：如果我們有零件庫存，大約一小時。費用是新台幣3,500元。\n顧客：好的，請幫我修。謝謝！\n技術員：修好後我們會打電話給您。",
+                question: "顧客的手機有什麼問題？",
+                options: ["無法開機", "電池沒電", "螢幕破裂", "無法上網"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Excuse me, my phone screen is cracked. Can you fix it?\nTechnician: Let me take a look. Yes, we can replace the screen. Which model is it?\nCustomer: It's an iPhone 13. How long will it take?\nTechnician: About an hour, if we have the part in stock. The cost is 3,500 NTD.\nCustomer: Okay, please fix it. Thank you!",
+            },
+            {
+                topic: "At a Museum/Art Gallery (博物館/美術館)",
+                conversation: [
+                    "Visitor: This exhibition is fascinating! What's the story behind this painting?",
+                    "Docent: This piece depicts a local fishing village in the 1950s. The artist used vibrant colors to capture the lively atmosphere.",
+                    "Visitor: It's very expressive. Is photography allowed?",
+                    "Docent: Flash photography is not permitted, but you can take pictures without flash.",
+                    "Visitor: Understood. Thank you for the explanation.",
+                    "Docent: My pleasure. Enjoy the rest of the exhibition."
+                ],
+                chineseTranslation: "參觀者：這個展覽真引人入勝！這幅畫背後的故事是什麼？\n導覽員：這幅作品描繪了1950年代的一個當地漁村。藝術家運用鮮豔的色彩捕捉生動的氛圍。\n參觀者：它非常有表現力。可以拍照嗎？\n導覽員：不允許使用閃光燈，但可以不使用閃光燈拍照。\n參觀者：明白了。謝謝你的解釋。\n導覽員：不客氣。祝您觀展愉快。",
+                question: "在這間博物館裡，哪種拍照方式不被允許？",
+                options: ["手機拍照", "無閃光燈拍照", "使用閃光燈拍照", "錄影"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Visitor: This exhibition is fascinating! What's the story behind this painting?\nDocent: This piece depicts a local fishing village in the 1950s. The artist used vibrant colors to capture the lively atmosphere.\nVisitor: It's very expressive. Is photography allowed?\nDocent: Flash photography is not permitted, but you can take pictures without flash.\nVisitor: Understood. Thank you for the explanation.",
+            },
+            {
+                topic: "Asking for a recommendation for a hiking trail (詢問登山步道推薦)",
+                conversation: [
+                    "Hiker: Excuse me, we're looking for a good hiking trail with nice views.",
+                    "Local: I recommend Elephant Mountain. It's a bit steep but offers amazing views of Taipei 101.",
+                    "Hiker: Elephant Mountain, sounds good! How long does it take to reach the top?",
+                    "Local: About 20-30 minutes, depending on your pace. It's quite popular.",
+                    "Hiker: Perfect! We'll give it a try. Thanks for the tip!",
+                    "Local: Enjoy the hike!"
+                ],
+                chineseTranslation: "登山客：不好意思，我們想找一條風景好的登山步道。\n當地人：我推薦象山。雖然有點陡峭，但可以欣賞到台北101的絕佳景色。\n登山客：象山，聽起來不錯！爬到山頂大約需要多久？\n當地人：大約20-30分鐘，取決於你的速度。它很受歡迎。\n登山客：太好了！我們會去試試看。謝謝你的建議！\n當地人：祝你登山愉快！",
+                question: "當地人推薦了哪座山？",
+                options: ["陽明山", "七星山", "象山", "合歡山"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Hiker: Excuse me, we're looking for a good hiking trail with nice views.\nLocal: I recommend Elephant Mountain. It's a bit steep but offers amazing views of Taipei 101.\nHiker: Elephant Mountain, sounds good! How long does it take to reach the top?\nLocal: About 20-30 minutes, depending on your pace. It's quite popular.\nHiker: Perfect! We'll give it a try. Thanks for the tip!",
+            },
+            {
+                topic: "At a Hot Spring Resort (溫泉會館)",
+                conversation: [
+                    "Guest: Hello, we'd like to book a private hot spring room.",
+                    "Receptionist: Certainly. For how long would you like to use it?",
+                    "Guest: One hour, please. Is there a public area as well?",
+                    "Receptionist: Yes, we have a large public hot spring area with different pools.",
+                    "Guest: Great! What's the cost for the private room?",
+                    "Receptionist: It's 800 NTD per hour. Please follow me."
+                ],
+                chineseTranslation: "客人：你好，我們想預訂一間私人溫泉房。\n接待員：當然。您想使用多久？\n客人：一小時，謝謝。也有公共區域嗎？\n接待員：是的，我們有一個大型公共溫泉區，有不同的池子。\n客人：太好了！私人房間的費用是多少？\n接待員：每小時800元。請跟我來。",
+                question: "客人想預訂私人溫泉房多久？",
+                options: ["半小時", "一小時", "一個半小時", "兩小時"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Guest: Hello, we'd like to book a private hot spring room.\nReceptionist: Certainly. For how long would you like to use it?\nGuest: One hour, please. Is there a public area as well?\nReceptionist: Yes, we have a large public hot spring area with different pools.\nGuest: Great! What's the cost for the private room?",
+            },
+            {
+                topic: "Buying a Souvenir at a Gift Shop (禮品店買紀念品)",
+                conversation: [
+                    "Customer: I'm looking for a small gift for my friend. Do you have anything unique from Taiwan?",
+                    "Shopkeeper: We have these beautiful aboriginal handcrafted items, like carved wooden figures or woven bags.",
+                    "Customer: They look lovely! How much is this small wooden owl?",
+                    "Shopkeeper: That one is 450 NTD. It's handmade by a local artist.",
+                    "Customer: I'll take it! It's perfect. Thank you!",
+                    "Shopkeeper: You're welcome. I'll wrap it for you."
+                ],
+                chineseTranslation: "顧客：我在找一個送給朋友的小禮物。你們有什麼台灣獨特的嗎？\n店主：我們有這些美麗的原住民手工藝品，像是木雕人偶或編織包。\n顧客：它們看起來很可愛！這個小木貓頭鷹多少錢？\n店主：那個是新台幣450元。是當地藝術家手工製作的。\n顧客：我要了！它很完美。謝謝！\n店主：不客氣。我幫你包起來。",
+                question: "顧客最終購買了什麼紀念品？",
+                options: ["編織包", "木雕人偶", "鳳梨酥", "小木貓頭鷹"],
+                correctAnswerIndex: 3,
+                englishTranscript: "Customer: I'm looking for a small gift for my friend. Do you have anything unique from Taiwan?\nShopkeeper: We have these beautiful aboriginal handcrafted items, like carved wooden figures or woven bags.\nCustomer: They look lovely! How much is this small wooden owl?\nShopkeeper: That one is 450 NTD. It's handmade by a local artist.\nCustomer: I'll take it! It's perfect. Thank you!",
+            },
+            {
+                topic: "At a KTV (KTV唱歌)",
+                conversation: [
+                    "Friend A: Let's sing some songs! What do you want to sing first?",
+                    "Friend B: How about a duet? Do you know 'A Whole New World'?",
+                    "Friend A: Oh, I love that one! Let's search for it. Do they have English songs here?",
+                    "Friend B: Yes, they have a huge selection of English and Chinese songs.",
+                    "Friend A: Awesome! This is going to be fun.",
+                    "Friend B: Definitely!"
+                ],
+                chineseTranslation: "朋友A：我們來唱歌吧！你先想唱什麼？\n朋友B：合唱怎麼樣？你會唱《A Whole New World》嗎？\n朋友A：喔，我超愛那首！我們來找找看。這裡有英文歌嗎？\n朋友B：有，他們有大量的英文歌和中文歌。\n朋友A：太棒了！這會很有趣。\n朋友B：當然！",
+                question: "朋友B提議唱哪首歌？",
+                options: ["Let It Go", "Perfect", "A Whole New World", "Despacito"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Friend A: Let's sing some songs! What do you want to sing first?\nFriend B: How about a duet? Do you know 'A Whole New World'?\nFriend A: Oh, I love that one! Let's search for it. Do they have English songs here?\nFriend B: Yes, they have a huge selection of English and Chinese songs.\nFriend A: Awesome! This is going to be fun.",
+            },
+            {
+                topic: "At a Temple Fair (廟會)",
+                conversation: [
+                    "Visitor: Wow, this temple fair is so lively! What's happening with the parade?",
+                    "Local: That's a traditional Mazu procession. People are celebrating the goddess Mazu.",
+                    "Visitor: It's incredible! Are those firecrackers part of the celebration?",
+                    "Local: Yes, they're used to ward off evil spirits and add to the festive atmosphere.",
+                    "Visitor: Fascinating! I've never seen anything like this.",
+                    "Local: It's a very important cultural event here."
+                ],
+                chineseTranslation: "參觀者：哇，這個廟會好熱鬧！遊行在做什麼？\n當地人：那是傳統的媽祖遶境。人們正在慶祝媽祖女神。\n參觀者：太不可思議了！那些鞭炮是慶祝活動的一部分嗎？\n當地人：是的，它們用來驅邪並增添節慶氣氛。\n參觀者：真引人入勝！我從沒見過這樣的景象。\n當地人：這是這裡非常重要的文化活動。",
+                question: "遊行是為了慶祝哪位神祇？",
+                options: ["關公", "玉皇大帝", "媽祖", "土地公"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Visitor: Wow, this temple fair is so lively! What's happening with the parade?\nLocal: That's a traditional Mazu procession. People are celebrating the goddess Mazu.\nVisitor: It's incredible! Are those firecrackers part of the celebration?\nLocal: Yes, they're used to ward off evil spirits and add to the festive atmosphere.\nVisitor: Fascinating! I've never seen anything like this.",
+            },
+            {
+                topic: "Asking for a receipt (索取收據)",
+                conversation: [
+                    "Customer: Can I get a receipt, please?",
+                    "Clerk: Certainly. Do you need a uniform invoice (發票)?",
+                    "Customer: Yes, please. For tax purposes.",
+                    "Clerk: No problem. Here's your invoice. Good luck with the lottery!",
+                    "Customer: Oh, right! Thank you!",
+                    "Clerk: You're welcome."
+                ],
+                chineseTranslation: "顧客：可以給我一張收據嗎？\n店員：當然。你需要統一發票嗎？\n顧客：是的，謝謝。為了報稅。\n店員：沒問題。這是你的發票。祝你中獎！\n顧客：喔，對！謝謝！\n店員：不客氣。",
+                question: "顧客除了收據之外還要求了什麼？",
+                options: ["塑膠袋", "找零", "統一發票", "會員卡"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Can I get a receipt, please?\nClerk: Certainly. Do you need a uniform invoice (發票)?\nCustomer: Yes, please. For tax purposes.\nClerk: No problem. Here's your invoice. Good luck with the lottery!\nCustomer: Oh, right! Thank you!",
+            },
+            {
+                topic: "At a Bubble Tea Shop (手搖飲店)",
+                conversation: [
+                    "Customer: Hi, I'd like a medium-sized passion fruit green tea.",
+                    "Staff: Half sugar, regular ice?",
+                    "Customer: No, actually, 30% sugar and less ice, please.",
+                    "Staff: 30% sugar, less ice. Got it. Anything else?",
+                    "Customer: That's all. Thank you!",
+                    "Staff: That'll be 60 NTD."
+                ],
+                chineseTranslation: "顧客：你好，我想要一杯中杯百香果綠茶。\n店員：半糖，正常冰嗎？\n顧客：不，其實是三分糖，少冰，謝謝。\n店員：三分糖，少冰。好的。還有別的嗎？\n顧客：就這些了。謝謝！\n店員：總共60元。",
+                question: "顧客對飲料的甜度和冰塊量有什麼特別要求？",
+                options: ["全糖多冰", "半糖少冰", "三分糖少冰", "無糖正常冰"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Hi, I'd like a medium-sized passion fruit green tea.\nStaff: Half sugar, regular ice?\nCustomer: No, actually, 30% sugar and less ice, please.",
+            },
+            {
+                topic: "Asking for help with directions at a train station (火車站問路)",
+                conversation: [
+                    "Traveler: Excuse me, where is the platform for trains heading south?",
+                    "Staff: Southbound trains usually depart from platforms 1 and 2. You can check the electronic board for your specific train.",
+                    "Traveler: Platforms 1 and 2. Thank you. Is there an elevator to the platforms?",
+                    "Staff: Yes, there's one near the ticket gates.",
+                    "Traveler: Great! Thanks for your help.",
+                    "Staff: Have a safe journey."
+                ],
+                chineseTranslation: "旅客：不好意思，往南的列車月台在哪裡？\n站務人員：往南的列車通常從1號和2號月台發車。您可以查看電子看板確認您的具體列車。\n旅客：1號和2號月台。謝謝。有電梯到月台嗎？\n站務人員：有，在驗票閘門附近。\n旅客：太好了！謝謝你的幫助。\n站務人員：祝您旅途平安。",
+                question: "往南的列車通常從哪個月台發車？",
+                options: ["3號和4號月台", "1號和2號月台", "5號和6號月台", "只有1號月台"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Traveler: Excuse me, where is the platform for trains heading south?\nStaff: Southbound trains usually depart from platforms 1 and 2. You can check the electronic board for your specific train.\nTraveler: Platforms 1 and 2. Thank you. Is there an elevator to the platforms?\nStaff: Yes, there's one near the ticket gates.\nTraveler: Great! Thanks for your help.",
+            },
+            {
+                topic: "At a Traditional Breakfast Shop (傳統早餐店)",
+                conversation: [
+                    "Customer: I'd like one danbing (egg pancake roll) with cheese, and a hot soy milk.",
+                    "Clerk: Cheese danbing and hot soy milk, got it. Anything else?",
+                    "Customer: Yes, and one fan-tuan (rice ball) with pork floss.",
+                    "Clerk: Pork floss fan-tuan. That'll be 110 NTD. For here or to go?",
+                    "Customer: To go, please.",
+                    "Clerk: Coming right up!"
+                ],
+                chineseTranslation: "顧客：我想要一份起司蛋餅和一杯熱豆漿。\n店員：起司蛋餅和熱豆漿，好的。還有別的嗎？\n顧客：是的，再加一個肉鬆飯糰。\n店員：肉鬆飯糰。總共110元。內用還是外帶？\n顧客：外帶，謝謝。\n店員：馬上就好！",
+                question: "顧客點了哪兩種食物？",
+                options: ["三明治和紅茶", "漢堡和奶茶", "蛋餅和飯糰", "燒餅油條和米漿"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: I'd like one danbing (egg pancake roll) with cheese, and a hot soy milk.\nClerk: Cheese danbing and hot soy milk, got it. Anything else?\nCustomer: Yes, and one fan-tuan (rice ball) with pork floss.\nClerk: Pork floss fan-tuan. That'll be 110 NTD. For here or to go?",
+            },
+            {
+                topic: "Asking for a power outlet (詢問插座)",
+                conversation: [
+                    "Customer: Excuse me, do you have any available power outlets here?",
+                    "Staff: Yes, there are a few near the window seats, and some under the bar counter.",
+                    "Customer: Great, my phone battery is almost dead. Can I use one?",
+                    "Staff: Of course. Feel free to use any that are free.",
+                    "Customer: Thank you so much!",
+                    "Staff: No problem."
+                ],
+                chineseTranslation: "顧客：不好意思，這裡有可用的插座嗎？\n店員：有，窗邊座位附近有幾個，吧台下方也有一些。\n顧客：太好了，我手機快沒電了。我可以用一個嗎？\n店員：當然。隨意使用任何空閒的插座。\n顧客：非常感謝！\n店員：不客氣。",
+                question: "顧客為什麼需要插座？",
+                options: ["想充電", "想使用吹風機", "想連接筆記型電腦", "想使用電磁爐"],
+                correctAnswerIndex: 0,
+                englishTranscript: "Customer: Excuse me, do you have any available power outlets here?\nStaff: Yes, there are a few near the window seats, and some under the bar counter.\nCustomer: Great, my phone battery is almost dead. Can I use one?\nStaff: Of course. Feel free to use any that are free.\nCustomer: Thank you so much!",
+            },
+            {
+                topic: "At a Traditional Wet Market (傳統菜市場)",
+                conversation: [
+                    "Customer: Good morning! How fresh are these fish?",
+                    "Vendor: Good morning! They were just caught last night. Very fresh!",
+                    "Customer: I'll take two of the smaller ones, please. Can you clean them for me?",
+                    "Vendor: Yes, no problem. Do you want them scaled and gutted?",
+                    "Customer: Yes, please. Thank you!",
+                    "Vendor: Coming right up."
+                ],
+                chineseTranslation: "顧客：早安！這些魚新鮮嗎？\n攤販：早安！它們是昨晚剛捕的。非常新鮮！\n顧客：我買兩條小一點的，謝謝。可以幫我處理一下嗎？\n攤販：可以，沒問題。你要去鱗和去內臟嗎？\n顧客：是的，謝謝。\n攤販：馬上就好。",
+                question: "顧客想買什麼？",
+                options: ["蔬菜", "肉類", "魚", "水果"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Good morning! How fresh are these fish?\nVendor: Good morning! They were just caught last night. Very fresh!\nCustomer: I'll take two of the smaller ones, please. Can you clean them for me?\nVendor: Yes, no problem. Do you want them scaled and gutted?\nCustomer: Yes, please. Thank you!",
             }
         ];
         let currentScenarioIndex = 0;
@@ -484,38 +1050,6 @@
             return text.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()?'"]/g, '').replace(/\s{2,}/g, ' ').trim();
         }
 
-        /**
-         * Plays a given audio blob.
-         * @param {Blob} blob - The audio blob to play.
-         */
-        async function playAudioBlob(blob) {
-            if (!blob) {
-                showMessageBox('沒有音訊可播放。', 'warning');
-                return;
-            }
-            try {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                const arrayBuffer = await blob.arrayBuffer();
-                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-                if (sourceNode) { // Stop previous playback if any
-                    sourceNode.stop();
-                    sourceNode.disconnect();
-                }
-
-                sourceNode = audioContext.createBufferSource();
-                sourceNode.buffer = audioBuffer;
-                sourceNode.connect(audioContext.destination);
-                sourceNode.start();
-                showMessageBox('正在播放音訊...', 'info');
-            } catch (error) {
-                console.error('Error playing audio blob:', error);
-                showMessageBox('播放音訊失敗。' + error.message, 'error');
-            }
-        }
-
         // --- Tab Switching Logic ---
         function showTab(tabId) {
             // Deactivate all tab buttons and hide all content sections
@@ -526,14 +1060,12 @@
             if (tabId === 'listening') {
                 listeningTabBtn.classList.add('active');
                 listeningContent.classList.add('active');
-            } else if (tabId === 'speaking') {
-                speakingTabBtn.classList.add('active');
-                speakingContent.classList.add('active');
             }
+            // Speaking tab logic removed
         }
 
         listeningTabBtn.addEventListener('click', () => showTab('listening'));
-        speakingTabBtn.addEventListener('click', () => showTab('speaking'));
+        // speakingTabBtn.addEventListener('click', () => showTab('speaking')); // Removed
 
         // --- Listening Practice Functions ---
 
@@ -884,265 +1416,8 @@
             showMessageBox('已切換到英式口音 🇬🇧。', 'info');
         });
 
-        // --- Speaking Practice Functions (unchanged from previous version, only UI text updated) ---
-
-        const targetSentenceEl = document.getElementById('targetSentence');
-        const recordBtn = document.getElementById('recordBtn');
-        const stopRecordBtn = document.getElementById('stopRecordBtn');
-        const playOriginalBtn = document.getElementById('playOriginalBtn');
-        const playMyRecordingBtn = document.getElementById('playMyRecordingBtn');
-        const nextSpeakingSentenceBtn = document.getElementById('nextSpeakingSentenceBtn');
-        const userTranscriptionEl = document.getElementById('userTranscription');
-        const speakingFeedbackEl = document.getElementById('speakingFeedback');
-
-        const startFreeSpeakBtn = document.getElementById('startFreeSpeakBtn');
-        const stopFreeSpeakBtn = document.getElementById('stopFreeSpeakBtn');
-        const freeSpeechTranscriptionEl = document.getElementById('freeSpeechTranscription');
-
-        /**
-         * Initializes SpeechRecognition.
-         * @param {boolean} continuous - If true, recognition continues until stopped.
-         * @param {boolean} interimResults - If true, interim results are returned.
-         * @param {Function} onResult - Callback for when a result is received.
-         * @param {Function} onEnd - Callback for when recognition ends.
-         * @param {Function} onError - Callback for when an error occurs.
-         * @returns {SpeechRecognition} The recognition object.
-         */
-        function initSpeechRecognition(continuous, interimResults, onResult, onEnd, onError) {
-            if (!('webkitSpeechRecognition' in window)) {
-                showMessageBox('語音辨識不支援此瀏覽器。請使用 Chrome 或 Edge。', 'error');
-                return null;
-            }
-            const SpeechRecognition = window.webkitSpeechRecognition;
-            const newRecognition = new SpeechRecognition();
-            newRecognition.continuous = continuous;
-            newRecognition.interimResults = interimResults;
-            newRecognition.lang = currentAccent; // Use selected accent for speech recognition
-
-            newRecognition.onresult = onResult;
-            newRecognition.onend = onEnd;
-            newRecognition.onerror = onError;
-
-            return newRecognition;
-        }
-
-        /**
-         * Starts audio recording using MediaRecorder.
-         * @param {Function} onDataAvailable - Callback for when audio data is available.
-         * @param {Function} onStop - Callback for when recording stops.
-         */
-        async function startRecording(onDataAvailable, onStop) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                    onDataAvailable(event.data);
-                };
-
-                mediaRecorder.onstop = () => {
-                    recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    onStop(recordedAudioBlob);
-                    // Stop the microphone stream tracks
-                    stream.getTracks().forEach(track => track.stop());
-                };
-
-                mediaRecorder.start();
-                showMessageBox('錄音已開始...', 'info');
-                recordBtn.disabled = true;
-                stopRecordBtn.disabled = false;
-                playMyRecordingBtn.disabled = true; // Disable playback until recording is done
-                playOriginalBtn.disabled = true; // Disable original playback during recording
-                nextSpeakingSentenceBtn.disabled = true; // Disable next sentence during recording
-            } catch (error) {
-                console.error('Error accessing microphone:', error);
-                showMessageBox('無法存取麥克風。請確認已授予權限。' + error.message, 'error');
-                recordBtn.disabled = false;
-                stopRecordBtn.disabled = true;
-            }
-        }
-
-        /**
-         * Stops the current audio recording.
-         */
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop();
-                showMessageBox('錄音已停止。', 'info');
-                recordBtn.disabled = false;
-                stopRecordBtn.disabled = true;
-                playMyRecordingBtn.disabled = false; // Enable playback after recording
-                playOriginalBtn.disabled = false; // Enable original playback after recording
-                nextSpeakingSentenceBtn.disabled = false; // Enable next sentence after recording
-            }
-        }
-
-        // --- Speaking Practice Event Listeners ---
-
-        nextSpeakingSentenceBtn.addEventListener('click', () => {
-            currentSpeakingSentenceIndex = (currentSpeakingSentenceIndex + 1) % speakingSentences.length;
-            targetSentenceEl.textContent = speakingSentences[currentSpeakingSentenceIndex];
-            userTranscriptionEl.textContent = '';
-            speakingFeedbackEl.textContent = '';
-            playOriginalBtn.disabled = false; // Enable play original for new sentence
-            playMyRecordingBtn.disabled = true; // Disable play my recording until new recording
-            recordedAudioBlob = null; // Clear previous recording
-            showMessageBox('載入下一個口說句子。', 'info');
-        });
-
-        recordBtn.addEventListener('click', async () => {
-            speakingFeedbackEl.textContent = ''; // Clear previous feedback
-            userTranscriptionEl.textContent = '正在聆聽...';
-
-            // Start recording audio
-            await startRecording(
-                (data) => { /* console.log('Audio data available:', data); */ },
-                (blob) => {
-                    recordedAudioBlob = blob;
-                    playMyRecordingBtn.disabled = false;
-                }
-            );
-
-            // Start speech recognition
-            recognition = initSpeechRecognition(
-                false, // Not continuous for sentence repetition
-                true,  // Interim results for live feedback
-                (event) => {
-                    let interimTranscript = '';
-                    let finalTranscript = '';
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript;
-                        } else {
-                            interimTranscript += transcript;
-                        }
-                    }
-                    userTranscriptionEl.textContent = finalTranscript || interimTranscript;
-                },
-                () => {
-                    // When speech recognition ends
-                    const targetText = normalizeText(targetSentenceEl.textContent);
-                    const userText = normalizeText(userTranscriptionEl.textContent);
-
-                    if (userText === targetText) {
-                        speakingFeedbackEl.textContent = '太棒了！您的發音很清晰。';
-                        speakingFeedbackEl.className = 'text-lg font-semibold mt-4 text-green-600';
-                    } else if (userText.includes(targetText) || targetText.includes(userText)) {
-                         speakingFeedbackEl.textContent = '不錯的嘗試！有些詞可能不對。請與原文比較。';
-                         speakingFeedbackEl.className = 'text-lg font-semibold mt-4 text-orange-600';
-                    }
-                    else {
-                        speakingFeedbackEl.textContent = '繼續練習！盡量更接近句子。';
-                        speakingFeedbackEl.className = 'text-lg font-semibold mt-4 text-red-600';
-                    }
-                    // Highlight differences (simple word-by-word comparison)
-                    const targetWords = targetText.split(' ');
-                    const userWords = userText.split(' ');
-                    let highlightedText = '';
-                    for (let i = 0; i < targetWords.length || i < userWords.length; i++) {
-                        const targetWord = targetWords[i] || '';
-                        const userWord = userWords[i] || '';
-                        if (targetWord === userWord && targetWord !== '') {
-                            highlightedText += `<span class="text-green-700">${targetWord}</span> `;
-                        } else if (userWord !== '') {
-                            highlightedText += `<span class="text-red-700">${userWord}</span> `;
-                        }
-                    }
-                    userTranscriptionEl.innerHTML = highlightedText.trim() || userTranscriptionEl.textContent;
-
-                    showMessageBox('語音辨識結束。', 'info');
-                },
-                (event) => {
-                    console.error('Speech recognition error:', event.error);
-                    showMessageBox('語音辨識錯誤：' + event.error, 'error');
-                    userTranscriptionEl.textContent = '轉錄錯誤。';
-                }
-            );
-            if (recognition) {
-                recognition.start();
-                showMessageBox('語音辨識已開始...', 'info');
-            }
-        });
-
-        stopRecordBtn.addEventListener('click', () => {
-            stopRecording();
-            if (recognition && recognition.recognizing) {
-                recognition.stop(); // Stop speech recognition
-            }
-        });
-
-        playOriginalBtn.addEventListener('click', () => {
-            const sentence = targetSentenceEl.textContent;
-            if (sentence && sentence !== "點擊「下一個句子」開始。") {
-                speakText(sentence, speaker1Voice); // Use a default voice for original playback
-            } else {
-                showMessageBox('沒有原文可播放。請點擊「下一個句子」。', 'warning');
-            }
-        });
-
-        playMyRecordingBtn.addEventListener('click', () => {
-            playAudioBlob(recordedAudioBlob);
-        });
-
-        // --- Free Speaking Mode (unchanged from previous version, only UI text updated) ---
-
-        let freeSpeechRecognition = null;
-
-        startFreeSpeakBtn.addEventListener('click', () => {
-            freeSpeechTranscriptionEl.textContent = '正在聆聽您的自由說話...';
-            startFreeSpeakBtn.disabled = true;
-            stopFreeSpeakBtn.disabled = false;
-
-            freeSpeechRecognition = initSpeechRecognition(
-                true,  // Continuous for free speaking
-                true,  // Interim results
-                (event) => {
-                    let interimTranscript = '';
-                    let finalTranscript = '';
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript;
-                        } else {
-                            interimTranscript += transcript;
-                        }
-                    }
-                    freeSpeechTranscriptionEl.textContent = finalTranscript || interimTranscript;
-                },
-                () => {
-                    showMessageBox('自由說話會話結束。', 'info');
-                    startFreeSpeakBtn.disabled = false;
-                    stopFreeSpeakBtn.disabled = true;
-                },
-                (event) => {
-                    console.error('Free speech recognition error:', event.error);
-                    showMessageBox('自由說話語音辨識錯誤：' + event.error, 'error');
-                    freeSpeechTranscriptionEl.textContent = '轉錄錯誤。';
-                    startFreeSpeakBtn.disabled = false;
-                    stopFreeSpeakBtn.disabled = true;
-                }
-            );
-            if (freeSpeechRecognition) {
-                freeSpeechRecognition.start();
-                showMessageBox('自由說話已開始。現在請說話！', 'info');
-            }
-        });
-
-        stopFreeSpeakBtn.addEventListener('click', () => {
-            if (freeSpeechRecognition && freeSpeechRecognition.recognizing) {
-                freeSpeechRecognition.stop();
-            }
-            startFreeSpeakBtn.disabled = false;
-            stopFreeSpeakBtn.disabled = true;
-        });
-
         // --- Initial Load ---
         window.onload = () => {
-            // Set initial content for speaking practice
-            targetSentenceEl.textContent = speakingSentences[currentSpeakingSentenceIndex];
             // Display the first listening scenario
             displayCurrentScenario();
             showMessageBox('歡迎使用您的英語學習應用程式！', 'info');
