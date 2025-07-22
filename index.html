@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英語學習應用程式</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for better aesthetics and responsiveness */
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f0f2f5; /* Light grey background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .app-container {
+            background-color: #ffffff;
+            border-radius: 16px; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            width: 100%;
+            max-width: 800px; /* Max width for desktop */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .tab-button {
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: #4b5563; /* Grey text */
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            color: #1d4ed8; /* Blue text */
+            border-color: #1d4ed8; /* Blue underline */
+        }
+        .content-section {
+            padding: 1.5rem;
+            display: none; /* Hidden by default */
+        }
+        .content-section.active {
+            display: block; /* Shown when active */
+        }
+
+        /* Styling for buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none; /* Remove default border */
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Darker blue */
+            transform: translateY(-2px); /* Lift effect */
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb; /* Light grey */
+            color: #374151; /* Dark grey text */
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db; /* Darker light grey */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .btn-danger {
+            background-color: #ef4444; /* Red */
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626; /* Darker red */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Input styling */
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            background-color: #fefcbf; /* Light yellow */
+            border: 1px solid #fcd34d; /* Yellow border */
+            color: #92400e; /* Dark brown text */
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none; /* Hidden by default */
+        }
+        .message-box.show {
+            display: block;
+        }
+
+        /* Specific styles for conversation display */
+        .conversation-line {
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+        .conversation-line:last-child {
+            border-bottom: none;
+        }
+        .option-button {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            transition: all 0.2s ease;
+        }
+        .option-button:hover:not(:disabled) {
+            background-color: #e5e7eb;
+            border-color: #9ca3af;
+        }
+        .option-button.selected {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+            font-weight: 600;
+        }
+        .option-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="app-container">
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-gray-200">
+            <button id="listeningTabBtn" class="tab-button active flex-1 text-center">聽力練習 🎧</button>
+            <button id="speakingTabBtn" class="tab-button flex-1 text-center">口說練習 🗣️</button>
+        </div>
+
+        <!-- Listening Practice Tab Content -->
+        <div id="listeningContent" class="content-section active">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">聽力練習</h2>
+
+            <!-- Accent Selection -->
+            <div class="mb-6 p-4 bg-blue-50 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">選擇口音</h3>
+                <div class="flex flex-wrap gap-3">
+                    <button id="usAccentBtn" class="btn btn-secondary">美式口音 🇺🇸</button>
+                    <button id="ukAccentBtn" class="btn btn-primary">英式口音 🇬🇧</button>
+                </div>
+            </div>
+
+            <!-- Listening Comprehension Quiz -->
+            <div class="p-4 bg-green-50 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">情境對話理解</h3>
+                <p class="text-gray-600 mb-4">仔細聆聽對話，然後回答問題。</p>
+
+                <div id="conversationDisplay" class="bg-white p-4 rounded-lg shadow-inner mb-6 min-h-[120px] flex flex-col justify-center">
+                    <!-- Conversation lines will be inserted here -->
+                    <p class="text-gray-500 italic">點擊「播放對話」開始。</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <button id="playConversationBtn" class="btn btn-primary flex-1">播放對話 ▶️</button>
+                    <button id="pauseConversationBtn" class="btn btn-secondary flex-1" disabled>暫停 ⏸️</button>
+                    <button id="stopConversationBtn" class="btn btn-danger flex-1" disabled>停止 ⏹️</button>
+                    <button id="nextScenarioBtn" class="btn btn-secondary flex-1">下一個情境 ➡️</button>
+                </div>
+
+                <p id="scenarioQuestion" class="text-lg font-semibold text-gray-800 mb-4 mt-4 hidden">問題：</p>
+                <div id="optionsContainer" class="grid grid-cols-1 gap-3 mb-4">
+                    <!-- Options buttons will be inserted here -->
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <button id="checkAnswerBtn" class="btn btn-primary" disabled>檢查答案 ✅</button>
+                    <button id="showTranscriptBtn" class="btn btn-secondary" disabled>顯示中文原文 📖</button>
+                </div>
+                <p id="quizFeedback" class="text-lg font-semibold mt-4"></p>
+                <p id="quizTranscriptDisplay" class="text-gray-700 mt-2 italic hidden whitespace-pre-wrap"></p>
+            </div>
+        </div>
+
+        <!-- Speaking Practice Tab Content -->
+        <div id="speakingContent" class="content-section">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">口說練習</h2>
+
+            <!-- Sentence Repetition -->
+            <div class="mb-8 p-4 bg-purple-50 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">句子重複</h3>
+                <p class="text-gray-600 mb-4">重複下面的句子並檢查你的發音。</p>
+                <p id="targetSentence" class="text-xl font-medium text-blue-700 bg-blue-100 p-3 rounded-md mb-4">點擊「下一個句子」開始。</p>
+                <div class="flex flex-wrap gap-3 mb-4">
+                    <button id="recordBtn" class="btn btn-primary">錄音 🎤</button>
+                    <button id="stopRecordBtn" class="btn btn-danger" disabled>停止錄音 ⏹️</button>
+                    <button id="playOriginalBtn" class="btn btn-secondary" disabled>播放原文 ▶️</button>
+                    <button id="playMyRecordingBtn" class="btn btn-secondary" disabled>播放我的錄音 👂</button>
+                    <button id="nextSpeakingSentenceBtn" class="btn btn-secondary">下一個句子 ➡️</button>
+                </div>
+                <p class="text-gray-600 mt-4">你的轉錄：</p>
+                <p id="userTranscription" class="text-lg text-gray-800 bg-gray-100 p-3 rounded-md min-h-[50px]"></p>
+                <p id="speakingFeedback" class="text-lg font-semibold mt-4"></p>
+            </div>
+
+            <!-- Free Speaking Mode -->
+            <div class="p-4 bg-yellow-50 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">自由口說模式</h3>
+                <p class="text-gray-600 mb-4">自由說話並查看你的文字轉錄。</p>
+                <div class="flex flex-wrap gap-3 mb-4">
+                    <button id="startFreeSpeakBtn" class="btn btn-primary">開始自由說話 🎙️</button>
+                    <button id="stopFreeSpeakBtn" class="btn btn-danger" disabled>停止自由說話 🛑</button>
+                </div>
+                <p class="text-gray-600 mt-4">你的自由說話轉錄：</p>
+                <p id="freeSpeechTranscription" class="text-lg text-gray-800 bg-gray-100 p-3 rounded-md min-h-[50px]"></p>
+            </div>
+        </div>
+
+        <!-- Global Message Box -->
+        <div id="messageBox" class="message-box"></div>
+    </div>
+
+    <script>
+        // --- Global Variables and Initial Setup ---
+        const appContainer = document.querySelector('.app-container');
+        const listeningTabBtn = document.getElementById('listeningTabBtn');
+        const speakingTabBtn = document.getElementById('speakingTabBtn');
+        const listeningContent = document.getElementById('listeningContent');
+        const speakingContent = document.getElementById('speakingContent');
+        const messageBox = document.getElementById('messageBox');
+
+        // Speech Synthesis (TTS)
+        const synth = window.speechSynthesis;
+        let currentUtterance = null; // To keep track of the current speaking utterance
+        let isConversationPlaying = false;
+        let isConversationPaused = false;
+        let speaker1Voice = null; // Voice for speaker 1
+        let speaker2Voice = null; // Voice for speaker 2
+        let currentAccent = 'en-GB'; // Default accent for all speech
+
+        // Speech Recognition (STT)
+        let recognition = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordedAudioBlob = null;
+        let audioContext = null;
+        let sourceNode = null;
+
+        // Sentences for speaking practice (unchanged from previous version)
+        const speakingSentences = [
+            "Hello, how are you today?",
+            "Could you please pass me the salt?",
+            "I would like to order a coffee, please.",
+            "What time does the next train depart?",
+            "It's a beautiful day for a walk.",
+            "Thank you for your help, I really appreciate it.",
+            "Where is the nearest supermarket?",
+            "I am learning English and it's quite interesting.",
+            "Could you repeat that, please?",
+            "Nice to meet you."
+        ];
+        let currentSpeakingSentenceIndex = 0;
+
+        // --- Listening Scenarios for Taiwan Daily Life ---
+        const listeningScenarios = [
+            {
+                topic: "Asking for Direction (問路)",
+                conversation: [
+                    "Tourist: Excuse me, could you tell me how to get to Taipei 101?",
+                    "Local: Of course! Go straight down this road, then turn left at the second traffic light.",
+                    "Tourist: Straight, then left at the second light. Got it. Is it far from there?",
+                    "Local: Not really. It's about a ten-minute walk. You can't miss it.",
+                    "Tourist: Thank you so much for your help!",
+                    "Local: You're welcome! Have a good day."
+                ],
+                chineseTranslation: "遊客：不好意思，請問台北101怎麼走？\n當地人：當然！沿著這條路直走，然後在第二個紅綠燈左轉。\n遊客：直走，第二個紅綠燈左轉。知道了。離那裡遠嗎？\n當地人：不太遠。大約走十分鐘。你不會錯過的。\n遊客：非常感謝您的幫助！\n當地人：不客氣！祝您有美好的一天。",
+                question: "根據對話，遊客需要在哪裡轉彎？",
+                options: ["第一個紅綠燈", "第二個紅綠燈", "第三個紅綠燈", "在路口右轉"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Tourist: Excuse me, could you tell me how to get to Taipei 101?\nLocal: Of course! Go straight down this road, then turn left at the second traffic light.\nTourist: Straight, then left at the second light. Got it. Is it far from there?\nLocal: Not really. It's about a ten-minute walk. You can't miss it.\nTourist: Thank you so much for your help!\nLocal: You're welcome! Have a good day."
+            },
+            {
+                topic: "Ordering at a Restaurant (餐廳點餐)",
+                conversation: [
+                    "Waiter: Welcome! What can I get for you today?",
+                    "Customer: Hi! I'd like a large bubble milk tea, half sugar, less ice.",
+                    "Waiter: Half sugar, less ice, got it. Anything else?",
+                    "Customer: Yes, and one beef noodle soup, please.",
+                    "Waiter: Excellent choice! That'll be 250 NTD.",
+                    "Customer: Here you go. Thank you!"
+                ],
+                chineseTranslation: "服務生：歡迎光臨！今天想點什麼？\n顧客：嗨！我想要一杯大杯珍珠奶茶，半糖少冰。\n服務生：半糖少冰，好的。還有別的嗎？\n顧客：是的，再加一份牛肉麵，謝謝。\n服務生：很棒的選擇！總共是新台幣250元。\n顧客：給你。謝謝！",
+                question: "顧客點了什麼飲料？",
+                options: ["咖啡", "綠茶", "珍珠奶茶", "果汁"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Waiter: Welcome! What can I get for you today?\nCustomer: Hi! I'd like a large bubble milk tea, half sugar, less ice.\nWaiter: Half sugar, less ice, got it. Anything else?\nCustomer: Yes, and one beef noodle soup, please.\nWaiter: Excellent choice! That'll be 250 NTD.\nCustomer: Here you go. Thank you!"
+            },
+            {
+                topic: "Airport Check-in (機場報到)",
+                conversation: [
+                    "Agent: Good morning! Passport and ticket, please.",
+                    "Passenger: Good morning. Here you are.",
+                    "Agent: Are you checking any bags today?",
+                    "Passenger: Yes, just one suitcase.",
+                    "Agent: Alright. Your gate is A12, and boarding starts at 9:30 AM.",
+                    "Passenger: Thank you!"
+                ],
+                chineseTranslation: "櫃檯人員：早安！請出示護照和機票。\n乘客：早安。給你。\n櫃檯人員：今天有要託運的行李嗎？\n乘客：是的，只有一個行李箱。\n櫃檯人員：好的。您的登機門是A12，上午9:30開始登機。\n乘客：謝謝！",
+                question: "乘客有幾件行李要託運？",
+                options: ["沒有", "一件", "兩件", "三件"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Agent: Good morning! Passport and ticket, please.\nPassenger: Good morning. Here you are.\nAgent: Are you checking any bags today?\nPassenger: Yes, just one suitcase.\nAgent: Alright. Your gate is A12, and boarding starts at 9:30 AM.\nPassenger: Thank you!"
+            },
+            {
+                topic: "Shopping at a Night Market (夜市購物)",
+                conversation: [
+                    "Vendor: Hello! Can I help you?",
+                    "Customer: Hi! How much is this T-shirt?",
+                    "Vendor: That one is 350 NTD.",
+                    "Customer: Hmm, is there a smaller size available?",
+                    "Vendor: Yes, we have small and medium. Which one would you like?",
+                    "Customer: I'll take the small, please."
+                ],
+                chineseTranslation: "攤販：你好！需要幫忙嗎？\n顧客：嗨！這件T恤多少錢？\n攤販：那件是新台幣350元。\n顧客：嗯，有小一點的尺寸嗎？\n攤販：有，我們有小號和中號。你想要哪一個？\n顧客：我拿小號的，謝謝。",
+                question: "顧客想知道T恤的什麼資訊？",
+                options: ["顏色", "價格", "材質", "品牌"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Vendor: Hello! Can I help you?\nCustomer: Hi! How much is this T-shirt?\nVendor: That one is 350 NTD.\nCustomer: Hmm, is there a smaller size available?",
+            },
+            {
+                topic: "Taking a Taxi (搭計程車)",
+                conversation: [
+                    "Passenger: Excuse me, are you free?",
+                    "Driver: Yes, where are you going?",
+                    "Passenger: To Ximending, please. How much will it be?",
+                    "Driver: About 200 to 250 NTD, depending on traffic.",
+                    "Passenger: Okay, let's go.",
+                    "Driver: Hop in!"
+                ],
+                chineseTranslation: "乘客：不好意思，你空著嗎？\n司機：是的，你要去哪裡？\n乘客：請到西門町。大概多少錢？\n司機：大約新台幣200到250元，取決於交通狀況。\n乘客：好的，走吧。\n司機：上車！",
+                question: "計程車司機預估車資大約是多少？",
+                options: ["100-150元", "200-250元", "300-350元", "400元以上"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Passenger: Excuse me, are you free?\nDriver: Yes, where are you going?\nPassenger: To Ximending, please. How much will it be?\nDriver: About 200 to 250 NTD, depending on traffic.\nPassenger: Okay, let's go.\nDriver: Hop in!"
+            },
+            {
+                topic: "Visiting a Temple (參觀廟宇)",
+                conversation: [
+                    "Visitor: This temple is beautiful! How old is it?",
+                    "Guide: It was built over 300 years ago, during the Qing Dynasty.",
+                    "Visitor: Wow, that's amazing. What are these carvings about?",
+                    "Guide: They depict stories from ancient Chinese folklore and mythology.",
+                    "Visitor: Fascinating! Thank you for the information.",
+                    "Guide: My pleasure."
+                ],
+                chineseTranslation: "遊客：這座廟真漂亮！它有多久歷史了？\n導遊：它建於300多年前，清朝時期。\n遊客：哇，太棒了。這些雕刻是關於什麼的？\n導遊：它們描繪了中國古代民間傳說和神話故事。\n遊客：真引人入勝！謝謝你的資訊。\n導遊：不客氣。",
+                question: "這座廟宇大約建於多久以前？",
+                options: ["100多年前", "200多年前", "300多年前", "400多年前"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Visitor: This temple is beautiful! How old is it?\nGuide: It was built over 300 years ago, during the Qing Dynasty.\nVisitor: Wow, that's amazing. What are these carvings about?\nGuide: They depict stories from ancient Chinese folklore and mythology.\nVisitor: Fascinating! Thank you for the information.",
+            },
+            {
+                topic: "At a Convenience Store (便利商店)",
+                conversation: [
+                    "Customer: Hi, I'd like this bottled water and a pack of tissues.",
+                    "Clerk: Okay, that's 45 NTD in total.",
+                    "Customer: Here's 50. Do you have a bag?",
+                    "Clerk: Yes, we do. Here's your change and your items.",
+                    "Customer: Thanks!",
+                    "Clerk: You're welcome. Have a good day."
+                ],
+                chineseTranslation: "顧客：嗨，我想要這瓶水和一包面紙。\n店員：好的，總共新台幣45元。\n顧客：這是50元。你們有袋子嗎？\n店員：是的，我們有。這是你的找零和你的商品。\n顧客：謝謝！\n店員：不客氣。祝您有美好的一天。",
+                question: "顧客除了水之外還買了什麼？",
+                options: ["餅乾", "雜誌", "面紙", "口香糖"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Hi, I'd like this bottled water and a pack of tissues.\nClerk: Okay, that's 45 NTD in total.\nCustomer: Here's 50. Do you have a bag?",
+            },
+            {
+                topic: "Riding the MRT (搭捷運)",
+                conversation: [
+                    "Tourist: Excuse me, which line goes to Taipei Main Station?",
+                    "Local: You need to take the Red Line. It's just two stops from here.",
+                    "Tourist: The Red Line, two stops. Got it. Is it easy to transfer?",
+                    "Local: Yes, very easy. All transfers are well-marked.",
+                    "Tourist: Great! Thanks for the info.",
+                    "Local: No problem, enjoy your ride!"
+                ],
+                chineseTranslation: "遊客：不好意思，哪條線到台北車站？\n當地人：你需要搭紅線。從這裡過去只有兩站。\n遊客：紅線，兩站。知道了。轉乘方便嗎？\n當地人：是的，非常方便。所有轉乘都有清楚標示。\n遊客：太好了！謝謝你的資訊。\n當地人：不客氣，祝你旅途愉快！",
+                question: "遊客需要搭乘哪條捷運線前往台北車站？",
+                options: ["藍線", "綠線", "紅線", "棕線"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Tourist: Excuse me, which line goes to Taipei Main Station?\nLocal: You need to take the Red Line. It's just two stops from here.\nTourist: The Red Line, two stops. Got it. Is it easy to transfer?\nLocal: Yes, very easy. All transfers are well-marked.\nTourist: Great! Thanks for the info.\nLocal: No problem, enjoy your ride!"
+            },
+            {
+                topic: "Booking Accommodation (預訂住宿)",
+                conversation: [
+                    "Guest: Hello, I'd like to book a room for two nights, starting tomorrow.",
+                    "Receptionist: Let me check. For how many people?",
+                    "Guest: Just one person.",
+                    "Receptionist: Okay, we have a standard single room available. The rate is 2,500 NTD per night.",
+                    "Guest: Sounds good. I'll take it.",
+                    "Receptionist: Excellent! Can I get your name, please?"
+                ],
+                chineseTranslation: "客人：你好，我想預訂一間房間，明天開始住兩晚。\n接待員：讓我查一下。幾個人？\n客人：只有一個人。\n接待員：好的，我們有一間標準單人房。每晚費用是新台幣2,500元。\n客人：聽起來不錯。我訂了。\n接待員：太好了！請問您的姓名是？",
+                question: "客人想預訂幾晚的房間？",
+                options: ["一晚", "兩晚", "三晚", "四晚"],
+                correctAnswerIndex: 1,
+                englishTranscript: "Guest: Hello, I'd like to book a room for two nights, starting tomorrow.\nReceptionist: Let me check. For how many people?\nGuest: Just one person.\nReceptionist: Okay, we have a standard single room available. The rate is 2,500 NTD per night.\nGuest: Sounds good. I'll take it.\nReceptionist: Excellent! Can I get your name, please?"
+            },
+            {
+                topic: "At a Bank/ATM (銀行/提款機)",
+                conversation: [
+                    "Customer: Excuse me, I'd like to exchange some currency.",
+                    "Bank Teller: Certainly. What currency are you exchanging?",
+                    "Customer: US dollars to New Taiwan dollars.",
+                    "Bank Teller: Okay, please fill out this form. Do you have your passport?",
+                    "Customer: Yes, here it is.",
+                    "Bank Teller: Thank you. I'll process this for you."
+                ],
+                chineseTranslation: "顧客：不好意思，我想兌換一些貨幣。\n銀行櫃員：當然。您要兌換什麼貨幣？\n顧客：美元兌換新台幣。\n銀行櫃員：好的，請填寫這份表格。您有帶護照嗎？\n顧客：是的，在這裡。\n銀行櫃員：謝謝。我會為您辦理。",
+                question: "顧客想把什麼貨幣兌換成新台幣？",
+                options: ["日圓", "歐元", "美元", "人民幣"],
+                correctAnswerIndex: 2,
+                englishTranscript: "Customer: Excuse me, I'd like to exchange some currency.\nBank Teller: Certainly. What currency are you exchanging?\nCustomer: US dollars to New Taiwan dollars.\nBank Teller: Okay, please fill out this form. Do you have your passport?",
+            }
+        ];
+        let currentScenarioIndex = 0;
+        let selectedOptionIndex = -1; // To track the user's selected option for the quiz
+
+        // Speaker voice configuration
+        const speakerColors = ['text-blue-700', 'text-green-700', 'text-purple-700', 'text-red-700', 'text-indigo-700'];
+        let speakerMap = {}; // Maps speaker name (e.g., "Tourist") to an index for color/voice
+        let speakerVoiceMap = {}; // Maps speaker name to a SpeechSynthesisVoice object
+
+        // --- Utility Functions ---
+
+        /**
+         * Displays a message in the global message box.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'success', 'error', 'info', 'warning'. Determines styling.
+         */
+        function showMessageBox(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.className = 'message-box show'; // Reset classes first
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            } else if (type === 'warning') {
+                messageBox.classList.add('bg-yellow-100', 'border-yellow-400', 'text-yellow-700');
+            } else { // info
+                messageBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+            }
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 5000); // Hide after 5 seconds
+        }
+
+        /**
+         * Normalizes text for comparison (removes punctuation, converts to lowercase).
+         * @param {string} text - The input text.
+         * @returns {string} Normalized text.
+         */
+        function normalizeText(text) {
+            return text.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()?'"]/g, '').replace(/\s{2,}/g, ' ').trim();
+        }
+
+        /**
+         * Plays a given audio blob.
+         * @param {Blob} blob - The audio blob to play.
+         */
+        async function playAudioBlob(blob) {
+            if (!blob) {
+                showMessageBox('沒有音訊可播放。', 'warning');
+                return;
+            }
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const arrayBuffer = await blob.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+                if (sourceNode) { // Stop previous playback if any
+                    sourceNode.stop();
+                    sourceNode.disconnect();
+                }
+
+                sourceNode = audioContext.createBufferSource();
+                sourceNode.buffer = audioBuffer;
+                sourceNode.connect(audioContext.destination);
+                sourceNode.start();
+                showMessageBox('正在播放音訊...', 'info');
+            } catch (error) {
+                console.error('Error playing audio blob:', error);
+                showMessageBox('播放音訊失敗。' + error.message, 'error');
+            }
+        }
+
+        // --- Tab Switching Logic ---
+        function showTab(tabId) {
+            // Deactivate all tab buttons and hide all content sections
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+
+            // Activate the selected tab button and show its content
+            if (tabId === 'listening') {
+                listeningTabBtn.classList.add('active');
+                listeningContent.classList.add('active');
+            } else if (tabId === 'speaking') {
+                speakingTabBtn.classList.add('active');
+                speakingContent.classList.add('active');
+            }
+        }
+
+        listeningTabBtn.addEventListener('click', () => showTab('listening'));
+        speakingTabBtn.addEventListener('click', () => showTab('speaking'));
+
+        // --- Listening Practice Functions ---
+
+        const playConversationBtn = document.getElementById('playConversationBtn');
+        const pauseConversationBtn = document.getElementById('pauseConversationBtn');
+        const stopConversationBtn = document.getElementById('stopConversationBtn'); // New stop button
+        const nextScenarioBtn = document.getElementById('nextScenarioBtn');
+        const conversationDisplay = document.getElementById('conversationDisplay');
+        const scenarioQuestionEl = document.getElementById('scenarioQuestion');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const checkAnswerBtn = document.getElementById('checkAnswerBtn');
+        const showTranscriptBtn = document.getElementById('showTranscriptBtn');
+        const quizFeedback = document.getElementById('quizFeedback');
+        const quizTranscriptDisplay = document.getElementById('quizTranscriptDisplay');
+        const usAccentBtn = document.getElementById('usAccentBtn');
+        const ukAccentBtn = document.getElementById('ukAccentBtn');
+
+        /**
+         * Selects the best available voice for a given language tag and preference.
+         * Prioritizes Google voices, then Microsoft, then generic.
+         * @param {string} langTag - The language tag (e.g., 'en-US', 'en-GB').
+         * @returns {SpeechSynthesisVoice|null} The selected voice or null if none found.
+         */
+        function selectBestVoice(langTag) {
+            const voices = synth.getVoices();
+            const filteredVoices = voices.filter(voice => voice.lang === langTag);
+
+            // Prioritize Google voices
+            let voice = filteredVoices.find(v => v.name.includes('Google') && !v.name.includes('Female'));
+            if (voice) return voice;
+            voice = filteredVoices.find(v => v.name.includes('Google')); // Any Google voice
+
+            // Then Microsoft voices
+            if (!voice) voice = filteredVoices.find(v => v.name.includes('Microsoft') && !v.name.includes('Female'));
+            if (!voice) voice = filteredVoices.find(v => v.name.includes('Microsoft')); // Any Microsoft voice
+
+            // Fallback to any voice for the language
+            if (!voice) voice = filteredVoices[0];
+
+            return voice || null;
+        }
+
+        /**
+         * Loads available voices and assigns them to speakerVoiceMap.
+         */
+        function loadVoices() {
+            // Ensure voices are loaded before attempting to select
+            if (synth.getVoices().length === 0) {
+                synth.onvoiceschanged = loadVoices; // Re-run when voices are loaded
+                return;
+            }
+
+            let voice1, voice2;
+
+            if (currentAccent === 'en-GB') {
+                voice1 = selectBestVoice('en-GB');
+                voice2 = selectBestVoice('en-GB');
+            } else { // en-US
+                voice1 = selectBestVoice('en-US');
+                voice2 = selectBestVoice('en-US');
+            }
+
+            // Ensure voice2 is different from voice1 if possible
+            const allVoicesForAccent = synth.getVoices().filter(v => v.lang === currentAccent);
+            if (voice1 && voice2 && voice1.name === voice2.name && allVoicesForAccent.length > 1) {
+                voice2 = allVoicesForAccent.find(v => v.name !== voice1.name) || voice1;
+            } else if (!voice1 && allVoicesForAccent.length > 0) { // Fallback if selectBestVoice failed
+                voice1 = allVoicesForAccent[0];
+                voice2 = allVoicesForAccent.length > 1 ? allVoicesForAccent[1] : allVoicesForAccent[0];
+            } else if (!voice1 && !voice2) { // Absolute fallback to any English voices
+                const englishVoices = synth.getVoices().filter(v => v.lang.startsWith('en-'));
+                if (englishVoices.length >= 2) {
+                    voice1 = englishVoices[0];
+                    voice2 = englishVoices[1];
+                } else if (englishVoices.length === 1) {
+                    voice1 = englishVoices[0];
+                    voice2 = englishVoices[0];
+                } else {
+                    console.warn('No English voices found. Speech synthesis may not work.');
+                }
+            }
+
+            speaker1Voice = voice1;
+            speaker2Voice = voice2;
+
+            // console.log("Speaker 1 Voice:", speaker1Voice ? speaker1Voice.name : 'N/A');
+            // console.log("Speaker 2 Voice:", speaker2Voice ? speaker2Voice.name : 'N/A');
+        }
+
+        // Ensure voices are loaded when they change or initially
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadVoices;
+        }
+        loadVoices(); // Call initially in case voices are already loaded
+
+        /**
+         * Speaks the given text using SpeechSynthesisUtterance and returns a Promise.
+         * @param {string} text - The text to speak.
+         * @param {SpeechSynthesisVoice} voice - The voice to use.
+         * @returns {Promise<void>} A promise that resolves when speech ends or rejects on error.
+         */
+        function speakText(text, voice) {
+            return new Promise((resolve, reject) => {
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentAccent; // Use selected accent for language
+                currentUtterance.voice = voice;
+                currentUtterance.onend = () => {
+                    resolve();
+                };
+                currentUtterance.onerror = (event) => {
+                    console.error('SpeechSynthesisUtterance.onerror', event);
+                    showMessageBox('語音合成失敗。您的瀏覽器可能不支援或有問題。', 'error');
+                    reject(event); // Reject the promise on error
+                };
+                try {
+                    synth.speak(currentUtterance);
+                } catch (e) {
+                    console.error('Error calling synth.speak:', e);
+                    showMessageBox('語音合成啟動失敗。', 'error');
+                    reject(e); // Reject if speak itself throws an error
+                }
+            });
+        }
+
+        /**
+         * Displays the current scenario's conversation, question, and options.
+         */
+        function displayCurrentScenario() {
+            const scenario = listeningScenarios[currentScenarioIndex];
+            conversationDisplay.innerHTML = '<p class="text-gray-500 italic">點擊「播放對話」開始。</p>'; // Clear and reset
+            scenarioQuestionEl.textContent = `問題：${scenario.question}`;
+            scenarioQuestionEl.classList.add('hidden'); // Hide until conversation is played
+
+            optionsContainer.innerHTML = ''; // Clear previous options
+            scenario.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-button btn-secondary';
+                button.textContent = option;
+                button.dataset.index = index;
+                button.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(button);
+            });
+
+            checkAnswerBtn.disabled = true;
+            showTranscriptBtn.disabled = true;
+            quizFeedback.textContent = '';
+            quizTranscriptDisplay.classList.add('hidden');
+            selectedOptionIndex = -1; // Reset selected option
+
+            // Reset speaker map for new scenario
+            speakerMap = {};
+        }
+
+        /**
+         * Plays the conversation line by line.
+         */
+        async function playConversation() {
+            const scenario = listeningScenarios[currentScenarioIndex];
+            const conversationLines = scenario.conversation;
+            conversationDisplay.innerHTML = ''; // Clear initial message
+            synth.cancel(); // Always cancel previous speech before starting new
+            
+            playConversationBtn.disabled = true; // Disable play button during playback
+            nextScenarioBtn.disabled = true; // Disable next scenario during playback
+            pauseConversationBtn.disabled = false; // Enable pause button
+            stopConversationBtn.disabled = false; // Enable stop button
+            pauseConversationBtn.textContent = '暫停 ⏸️';
+            isConversationPlaying = true;
+            isConversationPaused = false;
+
+            let speakerCounter = 0;
+            for (let i = 0; i < conversationLines.length; i++) {
+                // If stopped by user, break the loop
+                if (!isConversationPlaying) {
+                    break;
+                }
+
+                // Handle pause state: wait until resumed
+                while (isConversationPaused && isConversationPlaying) {
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Poll every 100ms
+                }
+
+                // Check again if stopped after pause
+                if (!isConversationPlaying) {
+                    break;
+                }
+
+                const line = conversationLines[i];
+                const speakerMatch = line.match(/^([^:]+):/);
+                let speakerName = 'Unknown';
+                let actualSpeech = line;
+
+                if (speakerMatch) {
+                    speakerName = speakerMatch[1].trim();
+                    actualSpeech = line.substring(speakerMatch[0].length).trim();
+                }
+
+                if (!(speakerName in speakerMap)) {
+                    speakerMap[speakerName] = speakerCounter % 2; // Assign to speaker 0 or 1
+                    speakerCounter++;
+                }
+
+                const speakerIdx = speakerMap[speakerName];
+                const speakerColorClass = speakerColors[speakerIdx % speakerColors.length]; // Use modular arithmetic for color
+                const voiceToUse = (speakerIdx === 0) ? speaker1Voice : speaker2Voice;
+
+                const p = document.createElement('p');
+                p.className = `conversation-line text-gray-800 ${speakerColorClass}`;
+                p.textContent = line;
+                conversationDisplay.appendChild(p);
+                conversationDisplay.scrollTop = conversationDisplay.scrollHeight; // Scroll to bottom
+
+                try {
+                    await speakText(actualSpeech, voiceToUse);
+                } catch (error) {
+                    console.error("Error speaking line:", error);
+                    // Continue to next line even if one fails
+                }
+
+                // Add a small delay between lines for better pacing, unless paused or stopped
+                if (isConversationPlaying && !isConversationPaused) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+
+            // After conversation (or if stopped), reset controls
+            playConversationBtn.disabled = false; // Re-enable play button
+            nextScenarioBtn.disabled = false; // Re-enable next scenario button
+            pauseConversationBtn.disabled = true; // Disable pause after conversation finishes
+            stopConversationBtn.disabled = true; // Disable stop after conversation finishes
+            pauseConversationBtn.textContent = '暫停 ⏸️';
+            isConversationPlaying = false;
+            isConversationPaused = false;
+
+            synth.cancel(); // Ensure all speech is stopped at the end
+
+            showMessageBox('對話播放完畢。請選擇答案。', 'info');
+            scenarioQuestionEl.classList.remove('hidden');
+            optionsContainer.querySelectorAll('.option-button').forEach(btn => btn.disabled = false);
+        }
+
+        /**
+         * Handles option selection for the quiz.
+         * @param {number} index - The index of the selected option.
+         */
+        function selectOption(index) {
+            selectedOptionIndex = index;
+            optionsContainer.querySelectorAll('.option-button').forEach((btn, idx) => {
+                btn.classList.remove('selected');
+                if (idx === index) {
+                    btn.classList.add('selected');
+                }
+            });
+            checkAnswerBtn.disabled = false; // Enable check answer button
+        }
+
+        playConversationBtn.addEventListener('click', playConversation);
+
+        pauseConversationBtn.addEventListener('click', () => {
+            if (synth.speaking && !isConversationPaused) {
+                synth.pause();
+                isConversationPaused = true;
+                pauseConversationBtn.textContent = '繼續播放 ▶️';
+                showMessageBox('對話已暫停。', 'info');
+            } else if (synth.paused && isConversationPaused) {
+                synth.resume();
+                isConversationPaused = false;
+                pauseConversationBtn.textContent = '暫停 ⏸️';
+                showMessageBox('對話已恢復。', 'info');
+            }
+        });
+
+        stopConversationBtn.addEventListener('click', () => {
+            if (synth.speaking || synth.paused) {
+                synth.cancel(); // Stop any ongoing speech
+            }
+            isConversationPlaying = false;
+            isConversationPaused = false;
+            playConversationBtn.disabled = false;
+            nextScenarioBtn.disabled = false;
+            pauseConversationBtn.disabled = true;
+            stopConversationBtn.disabled = true;
+            pauseConversationBtn.textContent = '暫停 ⏸️';
+            showMessageBox('對話已停止。', 'info');
+            // Re-display scenario to clear conversation text and reset state
+            displayCurrentScenario();
+        });
+
+
+        nextScenarioBtn.addEventListener('click', () => {
+            if (synth.speaking || synth.paused) {
+                synth.cancel(); // Stop any ongoing speech
+                isConversationPlaying = false;
+                isConversationPaused = false;
+                pauseConversationBtn.disabled = true;
+                stopConversationBtn.disabled = true;
+                pauseConversationBtn.textContent = '暫停 ⏸️';
+            }
+            currentScenarioIndex = (currentScenarioIndex + 1) % listeningScenarios.length;
+            displayCurrentScenario();
+            showMessageBox('載入下一個情境。', 'info');
+        });
+
+        checkAnswerBtn.addEventListener('click', () => {
+            if (selectedOptionIndex === -1) {
+                showMessageBox('請先選擇一個答案。', 'warning');
+                return;
+            }
+
+            const scenario = listeningScenarios[currentScenarioIndex];
+            if (selectedOptionIndex === scenario.correctAnswerIndex) {
+                quizFeedback.textContent = '答對了！太棒了！🎉';
+                quizFeedback.className = 'text-lg font-semibold mt-4 text-green-600';
+                showMessageBox('恭喜！答案正確！', 'success');
+            } else {
+                quizFeedback.textContent = '答錯了。請再試一次或顯示中文原文。🤔';
+                quizFeedback.className = 'text-lg font-semibold mt-4 text-red-600';
+                showMessageBox('答案不正確。', 'error');
+            }
+            checkAnswerBtn.disabled = true; // Disable check answer after one attempt
+            showTranscriptBtn.disabled = false; // Enable show transcript
+            optionsContainer.querySelectorAll('.option-button').forEach(btn => btn.disabled = true); // Disable options after checking
+        });
+
+        showTranscriptBtn.addEventListener('click', () => {
+            const scenario = listeningScenarios[currentScenarioIndex];
+            quizTranscriptDisplay.textContent = `中文原文：\n${scenario.chineseTranslation}`;
+            quizTranscriptDisplay.classList.remove('hidden');
+        });
+
+        usAccentBtn.addEventListener('click', () => {
+            currentAccent = 'en-US';
+            usAccentBtn.classList.add('btn-primary');
+            usAccentBtn.classList.remove('btn-secondary');
+            ukAccentBtn.classList.add('btn-secondary');
+            ukAccentBtn.classList.remove('btn-primary');
+            loadVoices(); // Reload voices based on new accent preference
+            showMessageBox('已切換到美式口音 🇺🇸。', 'info');
+        });
+
+        ukAccentBtn.addEventListener('click', () => {
+            currentAccent = 'en-GB';
+            ukAccentBtn.classList.add('btn-primary');
+            ukAccentBtn.classList.remove('btn-secondary');
+            usAccentBtn.classList.add('btn-secondary');
+            usAccentBtn.classList.remove('btn-primary');
+            loadVoices(); // Reload voices based on new accent preference
+            showMessageBox('已切換到英式口音 🇬🇧。', 'info');
+        });
+
+        // --- Speaking Practice Functions (unchanged from previous version, only UI text updated) ---
+
+        const targetSentenceEl = document.getElementById('targetSentence');
+        const recordBtn = document.getElementById('recordBtn');
+        const stopRecordBtn = document.getElementById('stopRecordBtn');
+        const playOriginalBtn = document.getElementById('playOriginalBtn');
+        const playMyRecordingBtn = document.getElementById('playMyRecordingBtn');
+        const nextSpeakingSentenceBtn = document.getElementById('nextSpeakingSentenceBtn');
+        const userTranscriptionEl = document.getElementById('userTranscription');
+        const speakingFeedbackEl = document.getElementById('speakingFeedback');
+
+        const startFreeSpeakBtn = document.getElementById('startFreeSpeakBtn');
+        const stopFreeSpeakBtn = document.getElementById('stopFreeSpeakBtn');
+        const freeSpeechTranscriptionEl = document.getElementById('freeSpeechTranscription');
+
+        /**
+         * Initializes SpeechRecognition.
+         * @param {boolean} continuous - If true, recognition continues until stopped.
+         * @param {boolean} interimResults - If true, interim results are returned.
+         * @param {Function} onResult - Callback for when a result is received.
+         * @param {Function} onEnd - Callback for when recognition ends.
+         * @param {Function} onError - Callback for when an error occurs.
+         * @returns {SpeechRecognition} The recognition object.
+         */
+        function initSpeechRecognition(continuous, interimResults, onResult, onEnd, onError) {
+            if (!('webkitSpeechRecognition' in window)) {
+                showMessageBox('語音辨識不支援此瀏覽器。請使用 Chrome 或 Edge。', 'error');
+                return null;
+            }
+            const SpeechRecognition = window.webkitSpeechRecognition;
+            const newRecognition = new SpeechRecognition();
+            newRecognition.continuous = continuous;
+            newRecognition.interimResults = interimResults;
+            newRecognition.lang = currentAccent; // Use selected accent for speech recognition
+
+            newRecognition.onresult = onResult;
+            newRecognition.onend = onEnd;
+            newRecognition.onerror = onError;
+
+            return newRecognition;
+        }
+
+        /**
+         * Starts audio recording using MediaRecorder.
+         * @param {Function} onDataAvailable - Callback for when audio data is available.
+         * @param {Function} onStop - Callback for when recording stops.
+         */
+        async function startRecording(onDataAvailable, onStop) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                    onDataAvailable(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    onStop(recordedAudioBlob);
+                    // Stop the microphone stream tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                showMessageBox('錄音已開始...', 'info');
+                recordBtn.disabled = true;
+                stopRecordBtn.disabled = false;
+                playMyRecordingBtn.disabled = true; // Disable playback until recording is done
+                playOriginalBtn.disabled = true; // Disable original playback during recording
+                nextSpeakingSentenceBtn.disabled = true; // Disable next sentence during recording
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                showMessageBox('無法存取麥克風。請確認已授予權限。' + error.message, 'error');
+                recordBtn.disabled = false;
+                stopRecordBtn.disabled = true;
+            }
+        }
+
+        /**
+         * Stops the current audio recording.
+         */
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                showMessageBox('錄音已停止。', 'info');
+                recordBtn.disabled = false;
+                stopRecordBtn.disabled = true;
+                playMyRecordingBtn.disabled = false; // Enable playback after recording
+                playOriginalBtn.disabled = false; // Enable original playback after recording
+                nextSpeakingSentenceBtn.disabled = false; // Enable next sentence after recording
+            }
+        }
+
+        // --- Speaking Practice Event Listeners ---
+
+        nextSpeakingSentenceBtn.addEventListener('click', () => {
+            currentSpeakingSentenceIndex = (currentSpeakingSentenceIndex + 1) % speakingSentences.length;
+            targetSentenceEl.textContent = speakingSentences[currentSpeakingSentenceIndex];
+            userTranscriptionEl.textContent = '';
+            speakingFeedbackEl.textContent = '';
+            playOriginalBtn.disabled = false; // Enable play original for new sentence
+            playMyRecordingBtn.disabled = true; // Disable play my recording until new recording
+            recordedAudioBlob = null; // Clear previous recording
+            showMessageBox('載入下一個口說句子。', 'info');
+        });
+
+        recordBtn.addEventListener('click', async () => {
+            speakingFeedbackEl.textContent = ''; // Clear previous feedback
+            userTranscriptionEl.textContent = '正在聆聽...';
+
+            // Start recording audio
+            await startRecording(
+                (data) => { /* console.log('Audio data available:', data); */ },
+                (blob) => {
+                    recordedAudioBlob = blob;
+                    playMyRecordingBtn.disabled = false;
+                }
+            );
+
+            // Start speech recognition
+            recognition = initSpeechRecognition(
+                false, // Not continuous for sentence repetition
+                true,  // Interim results for live feedback
+                (event) => {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    userTranscriptionEl.textContent = finalTranscript || interimTranscript;
+                },
+                () => {
+                    // When speech recognition ends
+                    const targetText = normalizeText(targetSentenceEl.textContent);
+                    const userText = normalizeText(userTranscriptionEl.textContent);
+
+                    if (userText === targetText) {
+                        speakingFeedbackEl.textContent = '太棒了！您的發音很清晰。';
+                        speakingFeedbackEl.className = 'text-lg font-semibold mt-4 text-green-600';
+                    } else if (userText.includes(targetText) || targetText.includes(userText)) {
+                         speakingFeedbackEl.textContent = '不錯的嘗試！有些詞可能不對。請與原文比較。';
+                         speakingFeedbackEl.className = 'text-lg font-semibold mt-4 text-orange-600';
+                    }
+                    else {
+                        speakingFeedbackEl.textContent = '繼續練習！盡量更接近句子。';
+                        speakingFeedbackEl.className = 'text-lg font-semibold mt-4 text-red-600';
+                    }
+                    // Highlight differences (simple word-by-word comparison)
+                    const targetWords = targetText.split(' ');
+                    const userWords = userText.split(' ');
+                    let highlightedText = '';
+                    for (let i = 0; i < targetWords.length || i < userWords.length; i++) {
+                        const targetWord = targetWords[i] || '';
+                        const userWord = userWords[i] || '';
+                        if (targetWord === userWord && targetWord !== '') {
+                            highlightedText += `<span class="text-green-700">${targetWord}</span> `;
+                        } else if (userWord !== '') {
+                            highlightedText += `<span class="text-red-700">${userWord}</span> `;
+                        }
+                    }
+                    userTranscriptionEl.innerHTML = highlightedText.trim() || userTranscriptionEl.textContent;
+
+                    showMessageBox('語音辨識結束。', 'info');
+                },
+                (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    showMessageBox('語音辨識錯誤：' + event.error, 'error');
+                    userTranscriptionEl.textContent = '轉錄錯誤。';
+                }
+            );
+            if (recognition) {
+                recognition.start();
+                showMessageBox('語音辨識已開始...', 'info');
+            }
+        });
+
+        stopRecordBtn.addEventListener('click', () => {
+            stopRecording();
+            if (recognition && recognition.recognizing) {
+                recognition.stop(); // Stop speech recognition
+            }
+        });
+
+        playOriginalBtn.addEventListener('click', () => {
+            const sentence = targetSentenceEl.textContent;
+            if (sentence && sentence !== "點擊「下一個句子」開始。") {
+                speakText(sentence, speaker1Voice); // Use a default voice for original playback
+            } else {
+                showMessageBox('沒有原文可播放。請點擊「下一個句子」。', 'warning');
+            }
+        });
+
+        playMyRecordingBtn.addEventListener('click', () => {
+            playAudioBlob(recordedAudioBlob);
+        });
+
+        // --- Free Speaking Mode (unchanged from previous version, only UI text updated) ---
+
+        let freeSpeechRecognition = null;
+
+        startFreeSpeakBtn.addEventListener('click', () => {
+            freeSpeechTranscriptionEl.textContent = '正在聆聽您的自由說話...';
+            startFreeSpeakBtn.disabled = true;
+            stopFreeSpeakBtn.disabled = false;
+
+            freeSpeechRecognition = initSpeechRecognition(
+                true,  // Continuous for free speaking
+                true,  // Interim results
+                (event) => {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    freeSpeechTranscriptionEl.textContent = finalTranscript || interimTranscript;
+                },
+                () => {
+                    showMessageBox('自由說話會話結束。', 'info');
+                    startFreeSpeakBtn.disabled = false;
+                    stopFreeSpeakBtn.disabled = true;
+                },
+                (event) => {
+                    console.error('Free speech recognition error:', event.error);
+                    showMessageBox('自由說話語音辨識錯誤：' + event.error, 'error');
+                    freeSpeechTranscriptionEl.textContent = '轉錄錯誤。';
+                    startFreeSpeakBtn.disabled = false;
+                    stopFreeSpeakBtn.disabled = true;
+                }
+            );
+            if (freeSpeechRecognition) {
+                freeSpeechRecognition.start();
+                showMessageBox('自由說話已開始。現在請說話！', 'info');
+            }
+        });
+
+        stopFreeSpeakBtn.addEventListener('click', () => {
+            if (freeSpeechRecognition && freeSpeechRecognition.recognizing) {
+                freeSpeechRecognition.stop();
+            }
+            startFreeSpeakBtn.disabled = false;
+            stopFreeSpeakBtn.disabled = true;
+        });
+
+        // --- Initial Load ---
+        window.onload = () => {
+            // Set initial content for speaking practice
+            targetSentenceEl.textContent = speakingSentences[currentSpeakingSentenceIndex];
+            // Display the first listening scenario
+            displayCurrentScenario();
+            showMessageBox('歡迎使用您的英語學習應用程式！', 'info');
+        };
+
+    </script>
+</body>
+</html>
