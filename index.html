@@ -271,7 +271,7 @@
                 question: "顧客點了什麼飲料？",
                 options: ["咖啡", "綠茶", "珍珠奶茶", "果汁"],
                 correctAnswerIndex: 2,
-                englishTranscript: "Waiter: Welcome! What can I get for you today?\nCustomer: Hi! I'd like a large bubble milk tea, half sugar, less ice.\nWaiter: Half sugar, less ice, got it. Anything else?\nCustomer: Yes, and one beef noodle soup, please.\nWaiter: Excellent choice! That'll be 250 NTD.\nCustomer: Here you go. Thank you!"
+                englishTranscript: "Waiter: Welcome! What can I get for you today?\nCustomer: Hi! I'd like a large bubble milk tea, half sugar, less ice.\nWaiter: Half sugar, less ice, got it. Anything else?",
             },
             {
                 topic: "Airport Check-in (機場報到)",
@@ -793,7 +793,7 @@
                     "Teahouse Staff: Welcome! We have several types of oolong tea. Would you like a lighter or stronger flavour?",
                     "Customer: A lighter one, please. Which tea do you recommend for beginners?",
                     "Teahouse Staff: High Mountain Oolong is a good choice. It's very fragrant and smooth.",
-                    "Customer: Sounds perfect. Thank you!",
+                    "Customer: Sounds perfect. Thank Thank you!",
                     "Teahouse Staff: Please follow me to your table."
                 ],
                 chineseTranslation: "顧客：你好，我們想體驗傳統茶道。\n茶館員工：歡迎！我們有幾種烏龍茶。您喜歡清淡一點還是濃郁一點的口味？\n顧客：清淡一點的，謝謝。初學者推薦哪種茶？\n茶館員工：高山烏龍是個不錯的選擇。它非常芬芳順口。\n顧客：聽起來很完美。謝謝！\n茶館員工：請跟我到您的座位。",
@@ -1171,9 +1171,14 @@
                     resolve();
                 };
                 currentUtterance.onerror = (event) => {
-                    console.error('SpeechSynthesisUtterance.onerror', event.error || event); // Log event.error if available
-                    showMessageBox('語音合成失敗。您的瀏覽器可能不支援或有問題。', 'error');
-                    reject(event); // Reject the promise on error
+                    // If the error is 'interrupted' and conversation was explicitly stopped, resolve without error.
+                    if (event.error === 'interrupted' && !isConversationPlaying) {
+                        resolve();
+                    } else {
+                        console.error('SpeechSynthesisUtterance.onerror', event.error || event); // Log event.error if available
+                        showMessageBox('語音合成失敗。您的瀏覽器可能不支援或有問題。', 'error');
+                        reject(event); // Reject the promise on other errors
+                    }
                 };
                 try {
                     synth.speak(currentUtterance);
